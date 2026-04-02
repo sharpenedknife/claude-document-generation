@@ -1,0 +1,47 @@
+Generate Technical Specifications (specifiers.md) in markdown.
+
+YAML frontmatter:
+---
+title: Technical Specifications
+description: Tech stack, data model, API endpoints, security, deployment
+version: 1.0
+date: [today]
+author: Docgen
+category: Engineering
+status: PRODUCTION_READY
+tags: [specs, technical, architecture]
+---
+
+Sections IN ORDER:
+- Overview (1-2 sentences)
+- Prerequisites (Dev environments, tools, access)
+- Tech Stack:
+  * Frontend (framework, libraries, versions)
+  * Backend (language, runtime, framework)
+  * Database (type, schema decisions)
+  * Hosting (platform, regions, CDN)
+- Data Model (entities, relationships, key fields)
+- API Endpoints (if backend):
+  * GET/POST/PUT endpoints
+  * Request/response schemas
+  * Authentication method
+  * Rate limits
+- Environment Variables (what's needed, examples)
+- Third-Party Integrations (services, APIs, webhooks)
+- Performance Targets (load times, uptime, concurrency)
+- Security Requirements (auth, encryption, data protection)
+- Expected Output (table: component, tech, decision rationale)
+- Troubleshooting
+- Why This Matters
+- What's Next
+
+Quality rules:
+- BE SPECIFIC (node versions, database engines, not "modern stack")
+- INCLUDE rationale for tech choices
+- SHOW example schemas/endpoints
+- LIST dependencies and their versions
+- EXPLAIN security implementation
+
+Token budget: 2000 max
+
+Generate markdown only. Start with YAML.

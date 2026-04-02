@@ -1,0 +1,46 @@
+Generate Monetization Strategy in markdown.
+
+YAML frontmatter:
+---
+title: Monetization Strategy
+description: Pricing model, tiers, revenue projections, packaging
+version: 1.0
+date: [today]
+author: Docgen
+category: Business
+status: PRODUCTION_READY
+tags: [monetization, pricing, revenue, business-model]
+---
+
+Sections IN ORDER:
+- Overview (revenue model type: SaaS, freemium, marketplace, etc.)
+- Prerequisites (market knowledge, pricing tools, competitive analysis)
+- Target Customer Segment (who pays, how much they spend)
+- Pricing Philosophy (value-based, cost-plus, competitive, etc.)
+- Pricing Tiers:
+  * Free/Starter (if applicable)
+  * Professional/Pro
+  * Enterprise
+- Feature Matrix (what each tier includes)
+- Annual/Monthly Pricing (exact numbers with logic)
+- Revenue Projections:
+  * Year 1 (conservative/likely/optimistic)
+  * Year 2-3 (growth assumptions)
+- Competitive Analysis (how you compare in price/value)
+- Packaging Strategy (add-ons, bundles, annual discounts)
+- Churn Mitigation (how to keep customers)
+- Expected Output (table: tier, price, customers, revenue)
+- Troubleshooting
+- Why This Matters
+- What's Next
+
+Quality rules:
+- USE ACTUAL NUMBERS (not "competitive pricing")
+- SHOW math (cost → profit margin → price)
+- INCLUDE 3 scenarios (conservative/likely/optimistic)
+- BE SPECIFIC about payment terms/contracts
+- JUSTIFY each tier's price point
+
+Token budget: 2000 max
+
+Generate markdown only. Start with YAML.

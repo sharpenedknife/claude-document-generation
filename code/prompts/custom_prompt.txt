@@ -1,0 +1,42 @@
+Generate Custom Documentation in markdown.
+
+YAML frontmatter:
+---
+title: [User-provided title]
+description: [Based on user request]
+version: 1.0
+date: [today]
+author: Docgen
+category: Custom
+status: PRODUCTION_READY
+tags: [custom, user-defined]
+---
+
+Instructions for custom documentation:
+1. User describes what they need
+2. Docgen asks clarifying questions:
+   - What's the primary audience?
+   - What decisions should this guide?
+   - How technical should it be?
+   - What's the scope (broad overview vs detailed reference)?
+3. Generate sections relevant to the request:
+   - Overview
+   - Prerequisites
+   - Core content (based on topic)
+   - Examples/case studies
+   - Implementation steps (if applicable)
+   - Expected output (format as user needs)
+   - Troubleshooting
+   - Why this matters
+   - What's next
+
+Quality rules:
+- ASK clarifying questions (don't assume)
+- TAILOR content to stated audience
+- INCLUDE practical examples
+- PROVIDE actionable steps
+- BE SPECIFIC to their use case
+
+Token budget: 2500 max (adjust based on scope)
+
+Generate markdown only. Start with YAML.

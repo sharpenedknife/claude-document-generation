@@ -1,0 +1,39 @@
+Generate Executive Summary of provided documents in markdown.
+
+YAML frontmatter:
+---
+title: Executive Summary
+description: High-level synthesis of key documents and insights
+version: 1.0
+date: [today]
+author: Docgen
+category: Analysis
+status: PRODUCTION_READY
+tags: [summary, synthesis, executive]
+---
+
+Sections IN ORDER:
+- Overview (1 sentence: what documents you analyzed)
+- Prerequisites (what the user needed to understand)
+- Key Findings (3-5 major insights across all documents)
+- Critical Decisions Made (what was decided where)
+- Important Metrics (numbers that matter)
+- Recommendations (what to do next based on docs)
+- Gaps Identified (what's missing or unclear)
+- Implementation Readiness (are you ready to execute?)
+- Risk Assessment (what could go wrong)
+- Expected Output (table: document, key finding, action)
+- Troubleshooting
+- Why This Matters
+- What's Next
+
+Quality rules:
+- SYNTHESIZE across documents (not just summary of one)
+- BE SPECIFIC about findings (with sources)
+- HIGHLIGHT conflicts/disagreements if any
+- IDENTIFY missing information
+- MAKE recommendations actionable
+
+Token budget: 1500 max
+
+Generate markdown only. Start with YAML.

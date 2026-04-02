@@ -1,0 +1,61 @@
+Generate Marketing Documentation in markdown.
+
+YAML frontmatter:
+---
+title: [Document type - Messaging/Positioning/Branding/etc]
+description: Marketing strategy, positioning, messaging, brand voice
+version: 1.0
+date: [today]
+author: Docgen
+category: Marketing
+status: PRODUCTION_READY
+tags: [marketing, positioning, messaging, brand]
+---
+
+Sections IN ORDER (varies by doc type):
+
+FOR MESSAGING:
+- Overview (value proposition)
+- Prerequisites (audience knowledge)
+- Key Messaging Pillars (3-4 core messages)
+- Tagline (memorable 5-8 word phrase)
+- Elevator Pitch (20 seconds, problem → solution)
+- Value Propositions (specific benefits, 3+ statements)
+- Proof Points (why customers believe it)
+- Expected Output (table: message, use-case, tone)
+- Troubleshooting
+- Why This Matters
+- What's Next
+
+FOR POSITIONING:
+- Overview
+- Prerequisites
+- Target Market (who you're for)
+- Market Position (where you sit vs competitors)
+- Key Differentiators (what makes you different)
+- Competitive Landscape (direct/indirect competitors)
+- Why Us vs Competitors (comparison)
+- Brand Promise (what you guarantee)
+- Expected Output (table: positioning statement, targets, proof)
+
+FOR BRANDING:
+- Overview
+- Prerequisites
+- Brand Story (origin, mission, values)
+- Brand Personality (5 personality attributes)
+- Brand Voice (tone, style, language rules)
+- Visual Identity (colors, typography, imagery style)
+- Design Principles (what guides visual design)
+- Logo Usage (clear space, versions, dos/don'ts)
+- Expected Output (guidelines table)
+
+Quality rules:
+- USE SPECIFIC language (not "modern" or "innovative")
+- SHOW examples of brand voice in action
+- INCLUDE actual color values and typography specs
+- MAKE positioning statements testable (would customers recognize it?)
+- LINK messaging to business goals
+
+Token budget: 2000 max per marketing doc
+
+Generate markdown only. Start with YAML.

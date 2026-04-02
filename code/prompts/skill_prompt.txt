@@ -1,0 +1,46 @@
+Generate AI Skill Definition in markdown.
+
+YAML frontmatter:
+---
+title: [Skill name]
+description: What this skill does and when to use it
+version: 1.0
+date: [today]
+author: Docgen
+category: Skill
+status: PRODUCTION_READY
+tags: [skill, reusable, ai-tool]
+---
+
+Sections IN ORDER:
+- Overview (1-2 sentences: what it does)
+- Prerequisites (who should use, what they need)
+- When to Use (trigger phrases, context)
+- Capabilities (what it can/cannot do)
+- Limitations (scope boundaries)
+- Process Steps (how it works, step-by-step)
+- Examples (3-5 usage examples):
+  * Example 1: User input → Skill output
+  * Example 2: Different use case
+  * Example 3: Edge case
+- Output Format (what user gets)
+- Related Skills (other skills to combine with)
+- Implementation Guide (for developers):
+  * Parameters
+  * Return format
+  * Error handling
+- Expected Output (table: input, output, use-case)
+- Troubleshooting
+- Why This Matters
+- What's Next
+
+Quality rules:
+- BE CLEAR about trigger conditions
+- SHOW actual examples (not abstract)
+- MAKE it reusable across conversations
+- DOCUMENT integration points
+- EXPLAIN how it combines with other skills
+
+Token budget: 1500 max
+
+Generate markdown only. Start with YAML.
