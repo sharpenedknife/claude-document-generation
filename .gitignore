@@ -1,0 +1,34 @@
+# Generated files
+*.log
+*.tmp
+*.temp
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+
+# Drafts and temp work
+*_DRAFT.md
+*_WIP.md
+/temp/
+/scratch/
+
+# Old versions (keep in archive/ instead)
+*_old.md
+*_backup.md
+
+# Don't track generated metrics
+metrics/generation_log_backup.md
