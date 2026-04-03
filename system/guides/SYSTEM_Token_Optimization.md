@@ -16,95 +16,11 @@ A 100-point doc in 2K tokens is better than the same 100-point doc in 4K tokens.
 
 ## Token Budgets by Doc Type
 
-All budgets are HARD LIMITS. Exceeding budget = Gate 4 FAIL.
+All budgets are HARD LIMITS. Exceeding by >10% = Gate 4 FAIL.
 
-```json
-{
-  "setup_guide": {
-    "budget_tokens": 2500,
-    "rationale": "Simple step-by-step, prerequisites, troubleshooting",
-    "example": "How to Install Node.js"
-  },
-  
-  "api_guide": {
-    "budget_tokens": 3000,
-    "rationale": "Endpoint docs, parameters, examples, error codes",
-    "example": "Stripe API Reference"
-  },
-  
-  "config_guide": {
-    "budget_tokens": 2000,
-    "rationale": "Configuration options, examples, validation",
-    "example": "How to Configure Environment Variables"
-  },
-  
-  "troubleshooting": {
-    "budget_tokens": 2200,
-    "rationale": "5-7 common errors, root cause, fixes",
-    "example": "Troubleshooting npm Errors"
-  },
-  
-  "feature_documentation": {
-    "budget_tokens": 2800,
-    "rationale": "Feature overview, use cases, examples, limitations",
-    "example": "Dark Mode Feature Guide"
-  },
-  
-  "architecture_documentation": {
-    "budget_tokens": 3500,
-    "rationale": "System diagrams (described), component relationships, data flow",
-    "example": "Microservices Architecture Overview"
-  },
-  
-  "adr_decision_record": {
-    "budget_tokens": 1800,
-    "rationale": "Context, decision, consequences, alternatives",
-    "example": "ADR: Why We Chose PostgreSQL"
-  },
-  
-  "process_documentation": {
-    "budget_tokens": 2400,
-    "rationale": "Steps, roles, approval flows, exceptions",
-    "example": "Code Review Process"
-  },
-  
-  "gtm_strategy": {
-    "budget_tokens": 4000,
-    "rationale": "Market analysis, positioning, tactics, timeline, metrics",
-    "example": "2026 GTM Strategy for Enterprise Segment"
-  },
-  
-  "design_guide": {
-    "budget_tokens": 3200,
-    "rationale": "Design system, components, usage patterns, examples",
-    "example": "Button Component Design Guide"
-  },
-  
-  "branding_guide": {
-    "budget_tokens": 2800,
-    "rationale": "Brand voice, visual identity, messaging, examples",
-    "example": "Brand Voice Guidelines 2026"
-  },
-  
-  "content_strategy": {
-    "budget_tokens": 3500,
-    "rationale": "Content pillars, topics, formats, distribution, metrics",
-    "example": "Content Marketing Strategy Q1"
-  },
-  
-  "icp_definition": {
-    "budget_tokens": 2500,
-    "rationale": "Persona details, pain points, buying process, objections",
-    "example": "ICP: Enterprise SaaS CTOs"
-  },
-  
-  "web_dev_guide": {
-    "budget_tokens": 3000,
-    "rationale": "Setup, architecture, deployment, performance, security",
-    "example": "Building a React App: Complete Guide"
-  }
-}
-```
+**Source of truth:** `config/token_budgets.json` — always check that file for current budgets and rationale. Do not duplicate budget values here.
+
+**Quick reference:** Budgets range from 1,200 tokens (project-instructions) to 3,500 tokens (architecture). The `note` field in each budget entry explains the rationale. When in doubt, open `config/token_budgets.json`.
 
 ---
 

@@ -1,402 +1,266 @@
-# File Naming Convention
+# SYSTEM_File_Naming.md — LLM-Optimized Naming Convention
 
-All files follow strict naming pattern for clarity, searchability, and automation.
-
----
-
-## Master Pattern
-
-```
-{CATEGORY}_{TOPIC}_{VERSION}_{DATE}.md
-```
+**Why naming matters for AI:** Claude reads filenames before reading content. A file named `SYSTEM_Exit_Rules.md` tells Claude "this is a system framework file about exit rules" before it processes a single word. A file named `rules.md` tells it nothing. Research confirms: descriptive filenames improve AI retrieval accuracy significantly in RAG contexts.
 
 ---
 
-## Definitions
+## Core Principle
 
-### CATEGORY (Required)
+**The filename is the first question it answers.** Every filename should complete the sentence: "This file contains [FILENAME]."
 
-What domain or type of document:
-
-| Category | Use For | Examples |
-|----------|---------|----------|
-| GTM | Go-to-market | GTM_Strategy, GTM_Competitive_Analysis |
-| DESIGN | Design/UX docs | DESIGN_Button_System, DESIGN_Dark_Mode |
-| BRANDING | Brand/messaging | BRANDING_Voice, BRANDING_Visual_Identity |
-| CONTENT | Content strategy/guidelines | CONTENT_Blog_Strategy, CONTENT_SEO_Guide |
-| ICP | Customer profiles | ICP_Enterprise_CTOs, ICP_Mid_Market_SMB |
-| WEB | Web development | WEB_React_Setup, WEB_Deploy_Guide |
-| SKILL | Reusable workflows | SKILL_Market_Research, SKILL_Content_Optimization |
-| SYSTEM | Docgen framework | SYSTEM_Exit_Rules, SYSTEM_Token_Optimization |
-
-### TOPIC (Required)
-
-Main topic of the document (snake_case):
-
-**Good:**
-- `GTM_Strategy`
-- `Competitive_Analysis`
-- `Button_Component`
-- `Voice_Guidelines`
-
-**Bad:**
-- `GTM Strategy` (spaces, not snake_case)
-- `gtm_strategy` (lowercase, inconsistent with pattern)
-- `GTM_Strat` (abbreviated, unclear)
-- `Strategy` (missing category)
-
-### VERSION (Optional, include if needed)
-
-Only if multiple versions exist in parallel:
-
-```
-v1.0      # Initial release
-v1.1      # Minor update
-v2.0      # Major revision
-```
-
-**Include VERSION when:**
-- Multiple versions in active use (v1.0, v2.0)
-- Backwards compatibility matters
-
-**Skip VERSION when:**
-- Only one version exists
-- Versioning tracked in folder structure instead (better)
-
-### DATE (Optional, include for dated docs)
-
-Publication or revision date (YYYY-MM-DD):
-
-```
-2026-04-02
-2026-Q1
-2026
-```
-
-**Include DATE when:**
-- Content has shelf life (GTM strategies, market analysis)
-- Quarterly/annual updates
-- Need to distinguish "old" from "current"
-
-**Skip DATE when:**
-- Evergreen content (How to Install Node)
-- Versioning via v1.0, v2.0 instead
+- `SYSTEM_Exit_Rules.md` → "This file contains system exit rules." ✅
+- `BUILDER_Questions.md` → "This file contains builder questions." ✅
+- `rules.md` → "This file contains... rules? For what?" ❌
+- `doc1.md` → No signal at all. ❌
 
 ---
 
-## Complete Examples
+## Two Naming Patterns
 
-### Pattern 1: Evergreen setup guide (no version, no date)
-```
-WEB_React_Setup_Guide.md
-DESIGN_Button_Component.md
-SYSTEM_Exit_Rules.md
-```
+### Pattern A: Framework Files (system infrastructure)
 
-### Pattern 2: Dated strategy doc
-```
-GTM_Strategy_2026-04-02.md
-GTM_Strategy_2026-Q1.md
-GTM_Strategy_2026.md
-```
-
-### Pattern 3: Versioned competitive analysis
-```
-GTM_Competitive_Analysis_v1.0.md
-GTM_Competitive_Analysis_v2.0.md
-CONTENT_Blog_Strategy_v1.1.md
-```
-
-### Pattern 4: All three (rare, only if absolutely necessary)
-```
-GTM_Strategy_v2.0_2026-Q2.md
-DESIGN_System_v3.1_2026-04-15.md
-```
-
----
-
-## File Types & Companions
-
-### Main document
-```
-{NAME}.md
-```
-
-### Companion debt file
-```
-{NAME}.DEBT.md
-```
-
-### Companion metadata
-```
-{NAME}.metadata.json
-```
-
-**All three always together:**
-```
-GTM_Strategy_2026.md           ← Main doc
-GTM_Strategy_2026.DEBT.md      ← Debt tracking
-GTM_Strategy_2026.metadata.json ← Generation metadata
-```
-
----
-
-## Forbidden Characters & Patterns
-
-❌ **NEVER use:**
-- Spaces (use snake_case)
-- CamelCase (use snake_case)
-- Dashes/hyphens (use underscores)
-- Special chars (@#$%^&)
-- Abbreviations (use full words)
-- Emojis
-- Multiple consecutive underscores
-
-✅ **Always use:**
-- Lowercase for domains (gtm, not GTM, except CATEGORY prefix)
-- snake_case for spacing
-- Full words (not acronyms, except in CATEGORY)
-- YYYY-MM-DD for dates
-
-**Examples:**
+Files that ARE the documentation system — guides, templates, checklists, builders, research.
 
 ```
-❌ BAD
-GTM Strategy 2026.md
-gtm-strategy-2026.md
-GTM__Strategy.md
-GTM_Strat_v1.md
-GTM_Competitive_Analysis_(final).md
-
-✅ GOOD
-GTM_Strategy_2026.md
-GTM_Competitive_Analysis_v1.0.md
-DESIGN_Dark_Mode_Guide.md
-BRANDING_Voice_Guidelines_2026-Q1.md
-WEB_React_Performance_Optimization.md
+{TYPE}_{Topic}.md
 ```
 
----
-
-## Special Cases
-
-### System/Framework Documents
-Prefix with SYSTEM_:
+Examples:
 ```
 SYSTEM_Exit_Rules.md
-SYSTEM_Token_Optimization_Guide.md
-SYSTEM_Production_Folder_Structure.md
-DOC_Canonical_Template.md (no SYSTEM_ needed, universal)
+CHECKLIST_Human_Quality.md
+BUILDER_Questions.md
+RESEARCH_Claude_Best_Practices.md
+PROJECT_INSTRUCTIONS_Docgen_Production.md
 ```
 
-### Skill Documents
-Prefix with SKILL_:
+### Pattern B: Generated Output Documents (docs the system produces)
+
+Files that are produced BY the system — the deliverables for users.
+
 ```
-SKILL_Market_Research_Framework.md
-SKILL_Content_Gap_Analysis.md
-SKILL_GTM_Competitive_Mapping.md
+{DOMAIN}_{Topic}_v{X.Y}_{YYYY-MM-DD}.md
 ```
 
-### Template Documents
-Prefix with TEMPLATE_:
+Examples:
 ```
-TEMPLATE_GTM_Builder_Questionnaire.md
-TEMPLATE_Design_System_Doc.md
-TEMPLATE_ICP_Definition.md
-```
-
-### Archived/Deprecated
-Include [ARCHIVED] or [DEPRECATED] prefix:
-```
-[ARCHIVED]_GTM_Strategy_2025.md
-[DEPRECATED]_Old_Design_System_v0.9.md
+CODE_Stripe_Setup_v1.0_2026-04-03.md
+AI-DOCS_Welcome_Guide_v1.0_2026-04-03.md
+CLAUDE-PROJECT_Marketing_Hub_v1.0_2026-04-03.md
+REFERENCE_API_Config_v2.1_2026-04-03.md
 ```
 
 ---
 
-## Folder + Filename Combined
+## TYPE Prefixes — Framework Files
 
-Full path should make sense:
+Every framework file MUST start with one of these TYPE prefixes. Type prefix = ALL_CAPS + underscore.
+
+| TYPE Prefix | What It Signals | Examples |
+|---|---|---|
+| `SYSTEM_` | Authoritative framework rule — read-only, never edit | `SYSTEM_Exit_Rules.md`, `SYSTEM_Coding_Standards.md` |
+| `TEMPLATE_` | Document template — blank structure to fill in | `TEMPLATE_Debt_Standard.md` |
+| `DOC_` | THE canonical output template | `DOC_CANONICAL_TEMPLATE.md` |
+| `CHECKLIST_` | Quality gate checklist | `CHECKLIST_Human_Quality.md`, `CHECKLIST_AI_Quality.md` |
+| `EXAMPLE_` | Complete example showing target quality | `EXAMPLE_Perfect_Setup_Guide.md` |
+| `BUILDER_` | Builder intake questionnaire or rules file | `BUILDER_Questions.md`, `BUILDER_Rules.md` |
+| `RESEARCH_` | Research findings and external source synthesis | `RESEARCH_Claude_Project_Best_Practices.md` |
+| `PROJECT_INSTRUCTIONS_` | Claude.ai project instructions — paste-ready | `PROJECT_INSTRUCTIONS_Docgen_Production.md` |
+| `LOG_` | Logs, metrics, generation tracking | `LOG_Generation.md` |
+| `DEBT_` | Technical debt specification or tracker | `DEBT_Specification.md`, `SYSTEM_DEBT.md` |
+
+### Special auto-detected files (no TYPE prefix)
+
+These file names are auto-detected by tools and must be EXACT — no prefix:
+
+| File | Why exact | Detected by |
+|---|---|---|
+| `CLAUDE.md` | Auto-loaded by Claude Code, Claude Projects | Claude |
+| `README.md` | Auto-displayed by GitHub, file browsers | GitHub, many tools |
+| `CONTRIBUTING.md` | Standard open-source convention | GitHub |
+| `LICENSE` | Standard convention — no extension | GitHub, npm, pip |
+
+---
+
+## DOMAIN Categories — Output Documents
+
+Must match `config/domain_definitions.json`. Used as the CATEGORY prefix in output file names.
+
+| Domain prefix | Domain | Description |
+|---|---|---|
+| `CLAUDE-PROJECT_` | claude-project | Full Claude project setup from an idea |
+| `AI-DOCS_` | ai-docs | Individual AI docs (how-tos, references, features) |
+| `CODE_` | code | Code documentation (setup, API, architecture, ADR) |
+| `REFERENCE_` | reference | Reference material (configs, schemas, commands) |
+
+---
+
+## Separator Rules
+
+This is critical for LLM parsing. Different separators communicate different relationships:
+
+| Separator | Role | Where |
+|---|---|---|
+| `_` (underscore) | Separates **elements** from each other | Between TYPE and Topic; between Topic and Version; between Version and Date |
+| `_` or PascalCase | Separates **words within** an element | `Exit_Rules` or `ExitRules` — both valid within a topic |
+| `-` (hyphen) | Separates words in **folder names only** | `claude-project/`, `ai-docs/` — never in file names |
+| Never use spaces | N/A | Spaces break paths and LLM file tools |
 
 ```
-✅ GOOD STRUCTURE:
-output/gtm/v1.0/GTM_Strategy_2026-Q1.md
-output/gtm/v1.0/GTM_Strategy_2026-Q1.DEBT.md
+SYSTEM_Exit_Rules.md
+^      ^ ^         ^
+TYPE   _ Topic     .ext
 
-output/design/v1.0/DESIGN_Button_System.md
-output/design/v1.0/DESIGN_Button_System.DEBT.md
-
-builders/gtm/GTM_Builder_Rules.md
-builders/gtm/examples/GTM_Strategy_Example_v1.md
-
-❌ BAD STRUCTURE:
-output/GTM_Strategy_2026-Q1.md (no version folder)
-design/button/DESIGN_Button.md (redundant "design" in name + folder)
-v1.0/GTM_Strategy_2026.md (version in folder + filename)
+CODE_Stripe_Setup_v1.0_2026-04-03.md
+^    ^      ^     ^    ^
+DOM  _Topic_      _Ver _Date
 ```
 
 ---
 
-## Lookup & Search
+## Topic Naming Rules
 
-Good file naming = easy to find.
+Topics in framework files use `PascalCase` or `Title_Case`:
 
-**Search examples:**
-
-```bash
-# Find all GTM docs
-ls output/gtm/*/GTM_*.md
-
-# Find all v1.0 docs across domains
-find output/*/v1.0/ -name "*.md"
-
-# Find archived docs
-find . -name "[ARCHIVED]_*.md"
-
-# Find recent docs
-ls -lt output/*/*.md | head -20
-
-# Find by date
-ls output/*/v*/*_2026-04*.md
 ```
+✅ GOOD  SYSTEM_Exit_Rules.md       (Title_Case — first letter each word)
+✅ GOOD  SYSTEM_ExitRules.md        (PascalCase — also valid)
+❌ BAD   SYSTEM_exit_rules.md       (all lowercase — no visual separation from prefix)
+❌ BAD   SYSTEM_EXITRULES.md        (all caps — looks like another prefix)
+❌ BAD   SYSTEM_Exit-Rules.md       (hyphen in filename — reserved for folders)
+```
+
+Topics in output documents use `Title_Case` (matches the document's title):
+
+```
+✅ GOOD  CODE_Stripe_Payment_Setup_v1.0_2026-04-03.md
+❌ BAD   CODE_stripe-payment-setup_v1.0_2026-04-03.md
+❌ BAD   CODE_StripePaymentSetup_v1.0_2026-04-03.md  (PascalCase harder to read at speed)
+```
+
+---
+
+## Version Rules
+
+```
+v1.0    Initial release
+v1.1    Minor update (backwards compatible)
+v2.0    Major revision (breaking changes or full rewrite)
+```
+
+**Include VERSION when:** Multiple versions in active use, or backwards compatibility tracking needed.
+
+**Omit VERSION when:** Only one version exists, or version tracked in folder structure.
+
+---
+
+## Date Rules
+
+Use ISO 8601 format: `YYYY-MM-DD`. Always. No exceptions.
+
+```
+✅ 2026-04-03   (ISO 8601 — sorts correctly, machine-readable)
+❌ April 2026   (not sortable)
+❌ 04-03-2026   (ambiguous locale format)
+❌ 2026-Q1      (acceptable for quarterly docs only)
+```
+
+**Include DATE when:** Content has a shelf life, quarterly/annual updates, or distinguishing "old" from "current" matters.
+
+**Omit DATE when:** Evergreen content, or using version numbers instead.
+
+---
+
+## Companion Files
+
+Every generated output document ships with two companions:
+
+```
+CODE_Stripe_Setup_v1.0_2026-04-03.md          ← Main doc
+CODE_Stripe_Setup_v1.0_2026-04-03.DEBT.md     ← Known gaps
+CODE_Stripe_Setup_v1.0_2026-04-03.metadata.json ← Generation metadata
+```
+
+All three always together. Missing a companion = Gate 5 fail.
+
+---
+
+## Folder + Filename Combined Context
+
+The folder provides the domain context. The filename provides the type + topic context. Together they create unambiguous meaning for an AI agent navigating the workspace.
+
+```
+✅ GOOD — full context from path alone:
+system/guides/SYSTEM_Exit_Rules.md
+  └── "system framework guide: exit rules"
+
+builders/claude-project/BUILDER_Questions.md
+  └── "builder for claude-project domain: intake questions"
+
+output/claude-project/v1.0/CLAUDE-PROJECT_Code_Reviewer_v1.0_2026-04-03.md
+  └── "output: claude-project domain, Code Reviewer assistant, version 1.0, April 2026"
+
+❌ BAD — ambiguous path:
+builders/claude-project/rules.md
+  └── "rules? for what? for whom? which version?"
+
+output/doc1.md
+  └── completely opaque to AI and humans
+```
+
+---
+
+## Forbidden Patterns
+
+❌ Never use in file names:
+- Spaces → `Exit Rules.md` (use `Exit_Rules.md`)
+- Hyphens → `Exit-Rules.md` (use `Exit_Rules.md` — hyphens for folders only)
+- Special chars → `(final)`, `#`, `@`, `$`, `%`
+- Emojis → `🚀_Launch.md`
+- Double underscores → `SYSTEM__Exit.md`
+- Consecutive version + date without underscore → `v1.02026-04-03`
+- Abbreviations in topic → `Sys_Ex_Rl.md` (spell it out)
+- `[ARCHIVED]` or `[DEPRECATED]` brackets → use `ARCHIVED_` or `DEPRECATED_` prefix instead
 
 ---
 
 ## Naming Checklist
 
-Before saving a file, verify:
+Before saving any file, verify:
 
-- [ ] CATEGORY correct (GTM|DESIGN|BRANDING|CONTENT|ICP|WEB|SKILL|SYSTEM)
-- [ ] TOPIC clear and specific (snake_case, full words)
-- [ ] VERSION included if multiple versions exist (v1.0, v2.0)
-- [ ] DATE included if time-sensitive (YYYY-MM-DD or YYYY-Q#)
-- [ ] File uses underscores (not spaces, not dashes)
-- [ ] No special characters or emojis
-- [ ] DEBT.md companion exists (if applicable)
-- [ ] metadata.json companion exists (if generated)
-- [ ] Full path makes sense (folder + filename)
-- [ ] Can be found with simple command-line search
+**Framework files:**
+- [ ] Starts with a valid TYPE prefix (`SYSTEM_`, `CHECKLIST_`, `BUILDER_`, etc.)
+- [ ] Topic is PascalCase or Title_Case (not all-lowercase, not all-caps)
+- [ ] No hyphens in filename (hyphens only in folder names)
+- [ ] No spaces or special characters
 
----
+**Output documents:**
+- [ ] Starts with valid DOMAIN prefix (`CLAUDE-PROJECT_`, `AI-DOCS_`, `CODE_`, `REFERENCE_`)
+- [ ] Topic is Title_Case, underscore-separated words
+- [ ] Version included if needed (`v1.0` format)
+- [ ] Date in ISO 8601 if time-sensitive (`YYYY-MM-DD`)
+- [ ] Both companion files created (`DEBT.md`, `metadata.json`)
 
-## Automation: Naming Rules in Builder
-
-Builder should enforce:
-
-1. User provides CATEGORY (dropdown)
-2. User provides TOPIC (text input, auto snake_case)
-3. Builder auto-detects VERSION (if v1.0 exists, suggest v1.1)
-4. Builder auto-detects DATE (if user selects "dated doc", use today)
-5. Generate filename: `{CATEGORY}_{TOPIC}_{VERSION}_{DATE}.md`
-6. Create companions automatically:
-   - `{NAME}.DEBT.md`
-   - `{NAME}.metadata.json`
-7. Validate: filename searchable, no forbidden chars
-
-**Validation**
-```javascript
-// Pseudocode
-filename = `${CATEGORY}_${TOPIC}${VERSION}${DATE}.md`;
-
-// Check for forbidden chars
-if (filename.contains(/[\s\-()]/)) {
-  error("File contains spaces, dashes, or special chars");
-}
-
-// Check length
-if (filename.length > 100) {
-  error("Filename too long (>100 chars)");
-}
-
-// Check uniqueness
-if (fileExists(filename)) {
-  error("File already exists. Update version or use new topic.");
-}
-
-// All good - create file + companions
-create(filename);
-create(`${filename}.DEBT.md`);
-create(`${filename}.metadata.json`);
-```
+**Both:**
+- [ ] Full path makes unambiguous sense (folder + filename together)
+- [ ] Filename answers "What does this file contain?" without reading it
 
 ---
 
-## Migration from Old Names
+## Migration Reference
 
-If you have existing files with bad names, rename them:
+Current violations → corrected names:
 
-```bash
-# Before
-DESIGN System Components v1.md
-gtm-competitive-analysis.md
-Content-Strategy-Q1-2026.md
-
-# After
-DESIGN_System_Components_v1.0.md
-GTM_Competitive_Analysis.md
-CONTENT_Strategy_2026-Q1.md
-```
-
-Use this script to verify all files in a folder:
-
-```bash
-#!/bin/bash
-# Check file naming compliance
-
-for file in *.md; do
-  # Filename must match pattern
-  if [[ ! $file =~ ^[A-Z][A-Z0-9_]*_[a-z0-9_]+(_v[0-9]\.[0-9])?(_[0-9]{4}(-[0-9]{2})?)?\.md$ ]]; then
-    echo "❌ BAD: $file"
-  else
-    echo "✅ GOOD: $file"
-  fi
-done
-```
+| Was | Should be | Reason |
+|---|---|---|
+| `builder.md` | `BUILDER_Questions.md` | No type prefix |
+| `rules.md` | `BUILDER_Rules.md` | No type prefix |
+| `generation_log.md` | `LOG_Generation.md` | No type prefix |
+| `Project_Instructions_X.md` | `PROJECT_INSTRUCTIONS_X.md` | Inconsistent case |
+| `[ARCHIVED]_doc.md` | `ARCHIVED_doc.md` | Brackets break many systems |
+| `doc-topic.md` | `DOC_Topic.md` | Hyphens in filenames reserved for folders |
 
 ---
 
-## Real-World Naming Examples
-
-```
-✅ GOOD NAMES (production-ready):
-
-GTM_Strategy_2026-Q1.md
-GTM_Competitive_Analysis_v1.0.md
-GTM_Sales_Playbook_Enterprise.md
-GTM_ICP_Definition_Mid_Market.md
-
-DESIGN_Button_System.md
-DESIGN_Dark_Mode_Guide_v1.0.md
-DESIGN_Typography_Scale.md
-DESIGN_Color_Palette_2026.md
-
-BRANDING_Voice_Guidelines.md
-BRANDING_Visual_Identity_v2.0.md
-BRANDING_Messaging_Framework.md
-
-CONTENT_Blog_Strategy_2026.md
-CONTENT_SEO_Playbook_v1.1.md
-CONTENT_Gap_Analysis_Q1_2026.md
-
-ICP_Enterprise_CTOs.md
-ICP_Mid_Market_Product_Leaders.md
-ICP_Startup_Founders.md
-
-WEB_React_Setup_Guide.md
-WEB_Deploy_to_Production.md
-WEB_Performance_Optimization_v1.0.md
-
-SKILL_Market_Research_Framework.md
-SKILL_Content_Gap_Analysis.md
-SKILL_Competitive_Mapping.md
-
-SYSTEM_Exit_Rules.md
-SYSTEM_Token_Optimization_Guide.md
-```
-
-Consistency across all these enables:
-- Easy discovery
-- Automated processing
-- Clear versioning
-- Team communication
-- Time-based archiving
+*Documentation Builder · File Naming Standard v1.1 · April 2026*
+*Research basis: Anthropic context engineering docs, RAG knowledge base best practices, Claude Code community conventions*

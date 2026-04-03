@@ -12,7 +12,7 @@ Every doc must start with metadata block:
 
 ```yaml
 ---
-doc_type: setup_guide|api_guide|config_guide|troubleshooting|feature|architecture|adr|process
+doc_type: project-setup|claude-md|project-instructions|system-guide|how-to|reference|feature|process|update|setup-guide|api-guide|architecture|adr|troubleshooting|config-reference|schema-reference|command-reference
 audience: beginner|intermediate|advanced|all
 difficulty: easy|medium|hard
 time_estimate: "5-minutes|15-minutes|30-minutes|1-hour|varies"
@@ -34,7 +34,7 @@ status: production|draft|deprecated
 **Example:**
 ```yaml
 ---
-doc_type: setup_guide
+doc_type: setup-guide
 audience: beginner
 difficulty: easy
 time_estimate: "15-minutes"
@@ -264,7 +264,7 @@ Chunk 4: Troubleshooting section (split by error type if >5 errors)
 
 ```markdown
 ---
-doc_type: setup_guide
+doc_type: setup-guide
 audience: beginner
 difficulty: easy
 time_estimate: "20-minutes"
@@ -425,6 +425,52 @@ If any check fails, go to troubleshooting section below.
 - [ ] Related docs listed in frontmatter
 - [ ] Can Claude extract every prerequisite programmatically?
 - [ ] Can Claude match error messages to troubleshooting sections?
+
+---
+
+## Before → After: Common Conversions
+
+The fastest way to understand AI-first format is to see the transformation.
+
+**Prerequisites — Before (human prose):**
+```markdown
+You'll need Node.js 16 or higher and npm 8 or higher. Some familiarity with the terminal helps.
+```
+**After (AI-first):**
+```markdown
+### Level 1: Tools & Software
+- **Node.js 16+** (required) · Check: `node --version` · Install: nodejs.org · Why: native async support
+- **npm 8+** (required) · Check: `npm --version` · Install: `npm install -g npm@latest` · Why: workspaces feature
+### Level 3: Knowledge
+- **Basic terminal** (optional) · Guide: ubuntu.com/tutorials/command-line-for-beginners
+**Ready?** `node --version && npm --version`
+```
+
+**Steps — Before:**
+```markdown
+1. Clone the repo   2. Install dependencies   3. Run the setup script
+```
+**After:**
+```markdown
+### Step 1: Clone Repository
+1. Run: `git clone https://github.com/org/repo.git && cd repo`
+   Expected: folder populated with `src/`, `package.json`
+   **AI metadata:** Precondition: git + GitHub access · Postcondition: project folder exists
+```
+
+**Troubleshooting — Before:**
+```markdown
+If you get errors installing dependencies, try clearing the npm cache and installing again.
+```
+**After:**
+```markdown
+### Error: "npm ERR! code ERESOLVE"
+**Root cause:** Dependency version conflict (npm 7+ strict mode)
+**Fix:** 1. `npm install --legacy-peer-deps` 2. `npm cache clean --force && npm install`
+**AI metadata:** Error signature: "ERESOLVE" · Solution type: dependency conflict
+```
+
+**What changed in every case:** vague → specific versions, descriptions → exact commands, prose → labeled structure, no output → expected output shown, generic errors → exact error signatures.
 
 ---
 

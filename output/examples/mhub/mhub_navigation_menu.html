@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Hub — airSlate</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f0f13;
+    color: #e8e8f0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .hub {
+    width: 100%;
+    max-width: 760px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .header h1 span { color: #7c6af7; }
+  .header p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #888;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .card {
+    background: #1a1a24;
+    border: 1px solid #2a2a38;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    border-color: #7c6af7;
+    background: #1e1e2e;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(124, 106, 247, 0.15);
+  }
+  .card .icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .card p {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+  }
+  .card .badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(124, 106, 247, 0.15);
+    color: #7c6af7;
+    letter-spacing: 0.3px;
+  }
+  .card.wide {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+  .card.wide .icon { margin-bottom: 0; font-size: 22px; }
+  .card.wide h3 { margin-bottom: 2px; font-size: 14px; }
+  .card.wide p { font-size: 12px; }
+  .shortcut {
+    margin-top: 20px;
+    padding: 14px 20px;
+    background: #13131a;
+    border: 1px solid #1e1e2a;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+  }
+  .shortcut kbd {
+    background: #1e1e2e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 11px;
+    color: #888;
+    font-family: monospace;
+  }
+  .result {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .result.show { display: block; }
+  .result-text {
+    font-size: 16px;
+    color: #ccc;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .back-btn {
+    background: #1a1a24;
+    border: 1px solid #2a2a38;
+    border-radius: 8px;
+    color: #7c6af7;
+    font-size: 13px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .back-btn:hover { border-color: #7c6af7; }
+</style>
+</head>
+<body>
+<div class="hub">
+  <div id="menu">
+    <div class="header">
+      <h1>✦ <span>Marketing</span> Hub</h1>
+      <p>airSlate · What would you like to work on today?</p>
+    </div>
+
+    <div class="grid">
+      <div class="card" onclick="select('content')">
+        <span class="icon">✍️</span>
+        <div class="badge">Create</div>
+        <h3>Content Creation</h3>
+        <p>Blog posts, social copy, emails, landing pages, press releases</p>
+      </div>
+
+      <div class="card" onclick="select('campaign')">
+        <span class="icon">🚀</span>
+        <div class="badge">Plan</div>
+        <h3>Campaign Planning</h3>
+        <p>Full campaign briefs, calendars, channel strategy, success metrics</p>
+      </div>
+
+      <div class="card" onclick="select('brand')">
+        <span class="icon">🎨</span>
+        <div class="badge">Review</div>
+        <h3>Brand Voice Review</h3>
+        <p>Check any draft against airSlate brand guidelines before it ships</p>
+      </div>
+
+      <div class="card" onclick="select('seo')">
+        <span class="icon">📈</span>
+        <div class="badge">Audit</div>
+        <h3>SEO &amp; Performance</h3>
+        <p>Keyword research, content gaps, rank tracking, performance reports</p>
+      </div>
+
+      <div class="card" onclick="select('competitive')">
+        <span class="icon">🔍</span>
+        <div class="badge">Intel</div>
+        <h3>Competitive Intelligence</h3>
+        <p>Research competitors, build battlecards, find positioning gaps</p>
+      </div>
+
+      <div class="card" onclick="select('email')">
+        <span class="icon">📧</span>
+        <div class="badge">Sequence</div>
+        <h3>Email Sequences</h3>
+        <p>Onboarding, nurture, re-engagement flows with timing and branching</p>
+      </div>
+
+      <div class="card wide" onclick="select('slack')">
+        <span class="icon">💬</span>
+        <div>
+          <h3>Slack Announcements</h3>
+          <p>Draft, format, and send announcements to team channels</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="shortcut">
+      Type a number or keyword, or just describe what you need →&nbsp;
+      <kbd>content</kbd>&nbsp;<kbd>campaign</kbd>&nbsp;<kbd>brand</kbd>&nbsp;<kbd>seo</kbd>&nbsp;<kbd>competitive</kbd>&nbsp;<kbd>email</kbd>&nbsp;<kbd>slack</kbd>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="result-text" id="result-text"></div>
+    <button class="back-btn" onclick="goBack()">← Back to Hub</button>
+  </div>
+</div>
+
+<script>
+const responses = {
+  content: "Content Creation — I'll help you write blog posts, social copy, emails, or landing pages.\n\nWhat are you working on? (Share the topic, audience, and channel.)",
+  campaign: "Campaign Planning — Let's build a full campaign brief.\n\nWhat's the goal, product, and timeline we're working with?",
+  brand: "Brand Voice Review — Paste the content below and I'll check it against airSlate brand guidelines, flagging deviations by severity with specific fixes.",
+  seo: "SEO &amp; Performance — Are we doing keyword research, a site audit, or a performance report?\n\nShare the domain or topic you want to analyze.",
+  competitive: "Competitive Intelligence — Which competitor or market segment are we researching?\n\nI'll build a battlecard with positioning gaps and messaging opportunities.",
+  email: "Email Sequences — What type of sequence: onboarding, nurture, re-engagement, or win-back?\n\nTell me the product, audience, and goal.",
+  slack: "Slack Announcements — What's the announcement and which channel should it go to?\n\nI'll draft formatted Slack mrkdwn copy ready to send."
+};
+
+function select(type) {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('result-text').innerHTML = responses[type].replace(/\n/g, '<br>');
+  const result = document.getElementById('result');
+  result.style.display = 'block';
+  result.classList.add('show');
+}
+
+function goBack() {
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('result').classList.remove('show');
+}
+</script>
+</body>
+</html>

@@ -1,51 +1,40 @@
 {
+  "metadata": {
+    "version": "1.1",
+    "updated": "2026-04-03",
+    "purpose": "Claude/AI-first documentation system — generates docs for Claude project setup, AI implementations, and code documentation"
+  },
   "domains": {
-    "gtm": {
-      "name": "Go-To-Market",
-      "description": "GTM strategies, competitive analysis, market positioning, sales enablement",
-      "doc_types": ["gtm_strategy", "competitive_analysis", "sales_playbook", "market_analysis"],
-      "primary_audience": "Product, Marketing, Sales leadership",
+    "claude-project": {
+      "name": "Claude Project Setup",
+      "description": "Full Claude project documentation generated from an idea: CLAUDE.md, project instructions, system guides, templates, builders",
+      "doc_types": ["project-setup", "claude-md", "project-instructions", "system-guide"],
+      "primary_audience": "Developers and teams implementing Claude projects",
       "priority": 1,
       "status": "active"
     },
-    "design": {
-      "name": "Design & UX",
-      "description": "Design systems, component guides, interaction patterns, visual guidelines",
-      "doc_types": ["design_guide", "design_system", "component_documentation"],
-      "primary_audience": "Designers, Product, Frontend Engineers",
+    "ai-docs": {
+      "name": "AI Documentation",
+      "description": "Individual AI/Claude documentation: how-to guides, reference docs, feature docs, process docs for AI-powered workflows",
+      "doc_types": ["how-to", "reference", "feature", "process", "update"],
+      "primary_audience": "AI engineers, vibe-coders, Claude users building workflows",
       "priority": 1,
       "status": "active"
     },
-    "branding": {
-      "name": "Branding & Voice",
-      "description": "Brand voice, visual identity, messaging frameworks, brand guidelines",
-      "doc_types": ["branding_guide", "voice_guidelines", "messaging_framework"],
-      "primary_audience": "Marketing, Communications, Product",
+    "code": {
+      "name": "Code Documentation",
+      "description": "Technical code documentation with enforced coding standards: setup guides, API docs, architecture docs, ADRs",
+      "doc_types": ["setup-guide", "api-guide", "architecture", "adr", "troubleshooting"],
+      "primary_audience": "Engineers, developers, AI coding assistants",
       "priority": 2,
       "status": "active"
     },
-    "content": {
-      "name": "Content Strategy",
-      "description": "Content strategy, blog guidelines, SEO, content calendars, copywriting standards",
-      "doc_types": ["content_strategy", "content_guidelines", "seo_guide"],
-      "primary_audience": "Content team, Marketing, Product",
+    "reference": {
+      "name": "Reference Material",
+      "description": "Configuration reference, schema documentation, command references — machine-readable and human-readable",
+      "doc_types": ["config-reference", "schema-reference", "command-reference"],
+      "primary_audience": "AI systems (RAG retrieval), engineers, ops",
       "priority": 2,
-      "status": "active"
-    },
-    "icp": {
-      "name": "Ideal Customer Profile",
-      "description": "Customer personas, buying processes, pain points, objection handling",
-      "doc_types": ["icp_definition", "persona_guide", "buyer_journey"],
-      "primary_audience": "Sales, Product, Marketing",
-      "priority": 2,
-      "status": "active"
-    },
-    "web_dev": {
-      "name": "Web Development",
-      "description": "Setup guides, architecture, deployment, performance, security best practices",
-      "doc_types": ["setup_guide", "api_guide", "architecture_documentation"],
-      "primary_audience": "Engineers, DevOps, Product",
-      "priority": 1,
       "status": "active"
     }
   }

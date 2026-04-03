@@ -35,8 +35,8 @@ Each gate has:
 **Exit Criteria (ALL must be true):**
 - [ ] Frontmatter has all 8 required fields
 - [ ] YAML is valid (no syntax errors)
-- [ ] doc_type is valid (one of the 9 approved types)
-- [ ] domain is valid (gtm, design, branding, content, icp, or web_dev)
+- [ ] doc_type is valid — one of: `project-setup`, `claude-md`, `project-instructions`, `system-guide`, `how-to`, `reference`, `feature`, `process`, `update`, `setup-guide`, `api-guide`, `architecture`, `adr`, `troubleshooting`, `config-reference`, `schema-reference`, `command-reference`
+- [ ] domain is valid — one of: `claude-project`, `ai-docs`, `code`, `reference` (see `config/domain_definitions.json`)
 - [ ] audience is valid (beginner, intermediate, advanced, or all)
 - [ ] difficulty is valid (easy, medium, or hard)
 - [ ] status is valid (production, draft, or review)
@@ -63,38 +63,38 @@ Each gate has:
 **Example Pass:**
 ```yaml
 ---
-doc_type: gtm
-domain: gtm
-builder_version: v1.0
-generated_by: gtm_builder
-generated_at: 2026-04-02T14:30:00Z
+doc_type: project-setup
+domain: claude-project
+builder_version: v1.1
+generated_by: claude-project_builder
+generated_at: 2026-04-03T10:00:00Z
 builder_session_id: sess_abc123def456
 audience: intermediate
 difficulty: medium
-time_estimate: "2-weeks"
-prerequisites: []
+time_estimate: "1-hour"
+prerequisites: [claude-account, idea-description]
 status: production
 version: 1.0
 quality_score: 0
 exit_gates_passed: []
 ---
 
-# How to Build Your First GTM Strategy
+# How to Set Up a Claude Project from an Idea
 
-Create a go-to-market strategy for a new product in 2 weeks.
-This ensures you reach customers systematically instead of randomly.
+Generate all required Claude project files (CLAUDE.md, project instructions, system guides) from a single idea description.
+This ensures your Claude project has production-quality instructions, knowledge base structure, and quality gates from day one.
 ```
 
 **Example Fail:**
 ```yaml
 ---
-doc_type: unknown_type          # ❌ INVALID
-audience: all skill levels      # ❌ INVALID (not in enum)
+doc_type: unknown_type          # ❌ INVALID — not in approved list
+audience: all skill levels      # ❌ INVALID — not in enum
 ---
 
-# GTM Strategy                  # ❌ No action verb
-This document is about GTM strategies in general.
-This is useful for understanding how to approach market entry.
+# Claude Project                # ❌ No action verb
+This document is about Claude projects in general.
+It covers how to use Claude.
 ```
 
 ---
@@ -175,6 +175,7 @@ Make sure all prerequisites are installed.
 - [ ] No ambiguous pronouns ("it", "this", "that" without clear referent)
 - [ ] Tone consistent throughout
 - [ ] No contradictions between sections
+- [ ] **All code blocks pass SYSTEM_Coding_Standards.md checklist:** language tag present, expected output shown, no hardcoded secrets, imports present, dependencies version-pinned, within line-count limits, model strings are current
 
 **What Fails This Gate:**
 - Steps are descriptions not commands ("Install the library" vs. `npm install x`)
@@ -278,23 +279,23 @@ Then configure it properly so it works with your project.
 
 ```json
 {
-  "doc_type": "setup_guide",
-  "domain": "gtm",
-  "budget_tokens": 3000,
-  "actual_tokens": 2847,
-  "token_ratio": 0.95,
+  "doc_type": "how-to",
+  "domain": "ai-docs",
+  "budget_tokens": 2200,
+  "actual_tokens": 2050,
+  "token_ratio": 0.93,
   "status": "PASS"
 }
 ```
 
 ```json
 {
-  "doc_type": "api_guide",
-  "domain": "web_dev",
-  "budget_tokens": 2500,
-  "actual_tokens": 4200,
+  "doc_type": "project-setup",
+  "domain": "claude-project",
+  "budget_tokens": 5000,
+  "actual_tokens": 8400,
   "token_ratio": 1.68,
-  "status": "FAIL - reduce by 1700 tokens"
+  "status": "FAIL - exceeds budget by 68%. Reduce by 3400 tokens or split into 2 docs."
 }
 ```
 

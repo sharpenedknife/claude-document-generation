@@ -8,12 +8,22 @@ Custom instructions Claude receives when operating in a specific Claude Project.
 
 ---
 
+## The Curse of Instructions (Research Finding)
+
+More rules = lower compliance per rule. A system prompt with 50 rules follows each one ~60% of the time. With 7 rules, compliance per rule rises to ~90%.
+
+**Implication:** Every rule you add pushes out compliance on all existing rules. Include only instructions Claude won't follow correctly by default. Delete anything obvious.
+
+**Hard limit:** 5 Do's maximum + 5 Don'ts maximum = 10 total behavioral rules. No exceptions.
+
+---
+
 ## Core Rules
 
 ### 1. Length Constraint: 500–800 words max
 - Longer = more tokens burned, less context for actual work
 - Too short (< 300 words) = vague, contradictory behavior
-- Target: Dense, no filler
+- Target: Dense, no filler. Under 500 words is fine if rules are specific.
 
 ### 2. Structure (recommended order)
 1. **Role** — Who Claude becomes in this project (2-3 sentences)
@@ -73,16 +83,16 @@ Each do must be:
 - "Help the user succeed." (too broad)
 
 ### 7. Don'ts — Hard Constraints
-Things Claude must never do in this project, even if user asks.
+Things Claude must never do in this project, even if user asks. **Max 5. Each must include WHY — agents follow rules they understand.**
 
 **Good:**
-- "Never generate documentation without referencing the Documentation_Content_Guide first."
-- "Don't create prerequisites that violate the anti-patterns list."
-- "Never suggest docs are finished without running the quality checklist."
+- "Do not generate documentation without referencing the Documentation_Content_Guide first. Without this, output will lack required sections and fail Gate 2."
+- "Do not suggest docs are finished without running the quality checklist. Unverified docs fail silently in production."
 
 **Bad:**
 - "Don't be unhelpful." (not a constraint, it's obvious)
 - "Don't make mistakes." (unmeasurable, implies you won't)
+- "NEVER do X." (aggressive language overtriggers in Claude Sonnet — use "Do not" instead)
 
 ### 8. Examples — Show, Don't Tell
 **Include:**
@@ -204,6 +214,14 @@ Why: [Explanation of the difference]
 
 ---
 
+## Version Stamp Requirement
+
+Every generated project instructions file must include `Last updated: YYYY-MM-DD` in the header. Stale instructions cause agent failure. If the stamp is more than 30 days old, review before trusting.
+
+Update instructions whenever: a builder is added/removed, a key file is renamed, a workflow changes, a rule is proved wrong in practice.
+
+---
+
 ## Quality Checklist for Project Instructions
 
 - [ ] Role statement is one sentence, specific, tied to project purpose
@@ -214,5 +232,8 @@ Why: [Explanation of the difference]
 - [ ] No links to files (assume file names are known)
 - [ ] No general Claude behavior rules (focus on project uniqueness)
 - [ ] Total length 500–800 words
+- [ ] Do's: 5 max, each observable and project-specific
+- [ ] Don'ts: 5 max, each includes WHY, uses "Do not" not "NEVER"
 - [ ] No vague words: "helpful," "professional," "thorough," "best practices," "comprehensive"
+- [ ] Version stamp present: `Last updated: YYYY-MM-DD`
 - [ ] Reader Claude test passed (fresh instance answers questions correctly)
