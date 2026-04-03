@@ -4,119 +4,174 @@
 
 ---
 
-## Q0 — Context Gate (ask before anything else)
+## How Intake Works — Flexible Context Collection
 
-Before collecting detailed answers, ask:
+This builder does NOT require rigid Q1–Q8 answers. Users can provide context however they want:
 
-> "Tell me what you want to build in 2–3 sentences. Who uses it, what does it do, and what's the main problem it solves?"
+- **Answer questions** one at a time when prompted
+- **Paste freeform context** — existing specs, PRDs, design docs, competitor analysis, notes, braindumps
+- **Upload files** — screenshots, wireframes, existing code, spreadsheets
+- **Mix and match** — answer some questions, paste some context, skip the rest
 
-If the answer covers all three (who / what / why), proceed to Q1–Q8. If not, ask the missing piece specifically. Never proceed to generation without all three answered.
+Claude dynamically assesses whether it has enough context to generate quality docs. No question is mandatory — but more context = better docs.
 
 ---
 
-## Q1 — Product One-Liner
+## Context Assessment — Dynamic Sufficiency Check
 
+Before generating, Claude evaluates the available context against these tiers:
+
+### Tier 1 — Minimum Viable Context (can generate, with heavy defaults)
+- [ ] **What it is** — at least a sentence describing the product
+- [ ] **Who it's for** — some indication of the target user
+
+If only Tier 1 is met: warn the user.
+
+> "I have a basic idea of what you want to build, but I'm missing a lot of context. I'll fill gaps with smart defaults and assumptions — but the docs will be more generic. Specifically, I'll need to assume:
+> - [list each assumption: stack, features, user flows, etc.]
+>
+> Want me to proceed with these defaults, or would you like to add more detail first?"
+
+### Tier 2 — Solid Context (good generation, some defaults)
+Everything in Tier 1, plus:
+- [ ] **Core features** — at least 2-3 things the product does
+- [ ] **Tech stack** — specified or enough info to recommend one
+
+If Tier 2 is met: note any remaining defaults but proceed with confidence.
+
+> "I have a solid picture. I'll assume [list 2-3 defaults] unless you tell me otherwise. Generating now."
+
+### Tier 3 — Full Context (best possible output)
+Everything in Tier 2, plus:
+- [ ] **User flows** — how users move through the product
+- [ ] **Data entities** — what the product stores
+- [ ] **Integrations** — external services
+- [ ] **Existing code** — if any
+- [ ] **AI tool preference** — what they'll build with
+
+Tier 3 = maximum doc quality, fewest assumptions.
+
+---
+
+## Conversational Question Guide
+
+Use these questions to fill gaps — but only ask what's missing. If the user already provided the info (in freeform context, uploaded files, or earlier answers), don't re-ask.
+
+### Opening — Context Gate
+
+Start every product intake with:
+
+> "Tell me what you want to build. You can describe it in a few sentences, paste existing notes or specs, or just braindump — I'll figure out what I need."
+
+If the user provides rich context upfront, skip to whatever questions remain unanswered. If they give a brief description, use the questions below to fill gaps.
+
+---
+
+### Q1 — Product One-Liner
+**Ask when:** You can't summarize what it is in one sentence.
 **Ask:** "Give me the one-liner: '[Product] helps [user] to [outcome] by [differentiator].' Fill in the blanks."
-
-**Why:** Every doc in the bundle opens with this. If the one-liner is fuzzy, every doc is fuzzy.
-
-**What to capture:** Product name + target user + core outcome + differentiator.
+**Why:** Every doc opens with this. Fuzzy one-liner = fuzzy docs.
+**Default if skipped:** Synthesize from whatever context exists. State the synthesis back to the user.
 
 ---
 
-## Q2 — MVP Scope (max 5 features)
-
+### Q2 — MVP Scope
+**Ask when:** You don't know the core features.
 **Ask:** "List the features you want in the MVP — the smallest version that delivers real value. Maximum 5."
-
-If the user lists more than 5, ask them to prioritize: "If you could only ship 3 of these, which 3?"
-
-**Why:** The dev plan phases map directly to MVP features. Unbounded scope = unbounded dev plan = agent doesn't know where to stop.
-
-**What to capture:** Ordered list of 3–5 features with brief descriptions.
+**Why:** Dev plan phases map to features. Unbounded scope = docs that don't end.
+**Default if skipped:** Infer 3-5 features from the description. Flag them as inferred.
 
 ---
 
-## Q3 — Target Users and Core Flows
-
-**Ask:** "Who are the 1–2 types of users? For each, describe the most important thing they do in the product — one complete flow from landing to value."
-
-**Why:** Data schema and API design follow user flows. If the flows are unclear, the schema will have wrong entities.
-
-**What to capture:** User types + 1 core flow per type (start → actions → outcome).
+### Q3 — Target Users and Core Flows
+**Ask when:** You don't know who uses it or how they use it.
+**Ask:** "Who are the 1–2 types of users? For each, describe the most important thing they do — one complete flow from landing to value."
+**Why:** Data schema and API design follow user flows. Wrong flows = wrong schema.
+**Default if skipped:** Infer a single user type from the product description. Generate a basic happy-path flow. Mark as "INFERRED — verify with stakeholder."
 
 ---
 
-## Q4 — Data Entities
-
+### Q4 — Data Entities
+**Ask when:** You can't list what the product stores.
 **Ask:** "What are the main 'things' your product stores and manages? Example: a task manager has Users, Tasks, Projects, Comments."
-
-If the user isn't technical, rephrase: "What are the nouns in your product? What objects does a user create, manage, or interact with?"
-
-**Why:** The data schema doc derives from this. Entities define the entire backend.
-
-**What to capture:** 4–8 named entities + brief description of each + key relationships.
+**Why:** Entities define the entire backend.
+**Default if skipped:** Derive entities from features and flows. Always include Users. Mark derived entities as "INFERRED."
 
 ---
 
-## Q5 — Tech Stack
-
+### Q5 — Tech Stack
+**Ask when:** No stack mentioned and can't be inferred from existing code.
 **Ask:** "What tech stack do you want to use? If you're not sure, tell me your team's background and I'll recommend."
-
-Provide a recommendation if they don't know:
-- **Web app (non-technical founder, fast MVP):** Next.js + Supabase + Vercel
-- **Web app (engineering team):** Next.js + PostgreSQL + Node API + Docker
-- **Mobile:** React Native + Expo + Supabase
-- **AI-native product:** Next.js + Python FastAPI + PostgreSQL + OpenAI/Claude SDK
-
-**Why:** Architecture doc, CLAUDE.md, environment setup, and scaffold files all depend on stack. A vague stack = docs that don't work.
-
-**What to capture:** Frontend framework + backend + database + auth solution + deployment target.
+**Recommendations if unknown:**
+- Web app (non-technical founder, fast MVP): Next.js + Supabase + Vercel
+- Web app (engineering team): Next.js + PostgreSQL + Node API + Docker
+- Mobile: React Native + Expo + Supabase
+- AI-native product: Next.js + Python FastAPI + PostgreSQL + OpenAI/Claude SDK
+**Default if skipped:** Recommend based on product type + user signals. State the recommendation clearly.
 
 ---
 
-## Q6 — Key Integrations
-
-**Ask:** "Are there any external services this product must connect to? Examples: Stripe (payments), Auth0 (auth), SendGrid (email), OpenAI (AI), Twilio (SMS), Slack (notifications)."
-
-**Why:** Integrations appear in the architecture diagram, environment setup (API keys), and dev plan phases.
-
-**What to capture:** List of services + what they're used for.
+### Q6 — Key Integrations
+**Ask when:** Product clearly needs external services but none mentioned.
+**Ask:** "Are there any external services this product must connect to? Examples: Stripe (payments), Auth0 (auth), SendGrid (email), OpenAI (AI)."
+**Default if skipped:** Assume no integrations unless features imply them (e.g., "payments" implies Stripe or equivalent — flag assumption).
 
 ---
 
-## Q7 — AI Coding Tool
-
+### Q7 — AI Coding Tool
+**Ask when:** User hasn't mentioned what they'll build with.
 **Ask:** "Which AI coding tool will you use to build this? Claude Projects, Cursor, Windsurf, Codex, or something else?"
-
-**Why:** The CLAUDE.md format, starter prompt structure, and file bundle layout are optimized per tool. Cursor handles `.cursor/rules/` differently from Claude Projects.
-
-**What to capture:** Primary AI tool + secondary if any.
+**Default if skipped:** Assume Cursor. Note assumption in CLAUDE.md and Starter Prompt.
 
 ---
 
-## Q8 — Existing Code?
+### Q8 — Existing Code
+**Ask when:** Unclear if starting from scratch.
+**Ask:** "Are you starting from scratch, or is there an existing codebase?"
+**Default if skipped:** Assume new project (start from scratch).
 
-**Ask:** "Are you starting from scratch, or is there an existing codebase? If existing, describe what's already built."
+---
 
-**Why:** If existing code exists, the dev plan must not repeat what's done. Architecture doc references the existing structure.
+## Custom Context Intake
 
-**What to capture:** New project / existing project + what already exists.
+When the user pastes freeform context (specs, notes, braindumps, competitor analysis, design docs), extract and map to the question fields:
+
+1. **Parse** the pasted context for relevant information
+2. **Map** extracted info to Q1–Q8 fields
+3. **Show** what you extracted: "From your notes, I got: [product name], [features], [stack hint]. Still missing: [gaps]."
+4. **Ask** only the remaining gaps — or offer to proceed with defaults
+
+For uploaded files:
+- **Screenshots/wireframes** → extract implied features, user flows, UI patterns
+- **Existing code** → extract stack, file structure, entities, existing features
+- **Spreadsheets/docs** → extract requirements, feature lists, priorities
 
 ---
 
 ## Context Confirmation (before generating)
 
-Before generating any docs, present a summary and confirm:
+Before generating, present the full context map — showing what's confirmed vs. assumed:
 
-> "Here's what I'm going to build:
-> - **Product:** [one-liner]
-> - **MVP features:** [list]
-> - **Stack:** [stack]
-> - **Output bundle:** [7 docs + CLAUDE.md + starter prompt + scaffold]
+> "Here's what I'm working with:
 >
-> Does this look right, or do you want to adjust anything before I generate?"
+> **Confirmed (from your input):**
+> - Product: [one-liner]
+> - Features: [list]
+> - Stack: [if provided]
+>
+> **Assumed (I'll use these defaults):**
+> - Stack: [recommended] — ASSUMED
+> - User flows: [inferred] — INFERRED
+> - Data entities: [derived] — INFERRED
+> - AI tool: Cursor — DEFAULT
+>
+> **Output bundle:** 11 docs (PRD → UX → UI → Vision → Architecture → Data Schema → API Spec → Setup → Dev Plan → CLAUDE.md → Starter Prompt)
+>
+> Every ASSUMED/INFERRED item will be marked in the generated docs so you can verify and adjust.
+>
+> Proceed, or want to fill in more detail first?"
 
-Only generate after explicit confirmation.
+Generate only after explicit confirmation.
 
 ---
 
@@ -126,7 +181,7 @@ Only generate after explicit confirmation.
 
 | # | File | Purpose | Depends on |
 |---|---|---|---|
-| 1 | `PRD_{name}_v1.0.md` | Product requirements: features, acceptance criteria, out-of-scope | Q0–Q2 intake |
+| 1 | `PRD_{name}_v1.0.md` | Product requirements: features, acceptance criteria, out-of-scope | Intake context |
 | 2 | `UX_{name}_v1.0.md` | User journeys: personas, flows, edge cases | PRD |
 | 3 | `UI_{name}_v1.0.md` | Interface requirements: screen list, components, states | UX |
 | 4 | `PRODUCT_Vision_{name}_v1.0.md` | One-liner, success metrics, constraints | PRD |
@@ -140,11 +195,22 @@ Only generate after explicit confirmation.
 
 Delivered as: `{ProductName}_Implementation_Bundle_v1.0_{YYYY-MM-DD}.zip`
 
-**PRD note:** The PRD is the AI's source of truth for *what* to build. Every feature must have: description, user story, acceptance criteria, and out-of-scope boundary. This prevents scope creep during AI-assisted development.
+---
 
-**UX note:** User journeys inform the API design and UI component list. If flows are missing from UX, the API will be missing endpoints and the UI will be missing screens.
+## Assumption Marking Standard
 
-**UI note:** Screen list and component spec is what the AI uses to generate frontend code. It must reference UX flows (which screen triggers which) and design system tokens if available.
+Every inferred or defaulted value in generated docs MUST be visually marked:
+
+```markdown
+<!-- ASSUMED: No tech stack specified. Defaulting to Next.js + Supabase + Vercel based on product type (web SaaS, solo founder). Change this if you have a different stack preference. -->
+```
+
+And inline:
+```markdown
+**Tech Stack** *(ASSUMED)*: Next.js 14 (App Router) + Supabase (auth + DB) + Vercel (deploy)
+```
+
+This lets the user scan all assumptions quickly and decide what to override.
 
 ---
 
@@ -156,6 +222,7 @@ After delivering the bundle, always ask:
 > - Which docs need more detail?
 > - Anything missing or wrong in the dev plan?
 > - Does the starter prompt give the AI everything it needs?
+> - Any **ASSUMED** or **INFERRED** items you want to change?
 >
 > You can say 'redo [doc name]' with specific feedback and I'll regenerate just that doc."
 

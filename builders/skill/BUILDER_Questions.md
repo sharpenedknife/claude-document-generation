@@ -28,62 +28,82 @@ Spend as much time on the description as on the rest of the skill body combined.
 
 ---
 
-## Intake Questions
+## How Intake Works — Flexible Context Collection
 
-Ask all questions before generating. Do not generate with unknowns.
+No question is mandatory. Users can describe their skill idea however they want — freeform, with examples, by uploading an existing workflow, or by answering structured questions. Claude assesses what's needed and asks only for the gaps.
+
+---
+
+## Context Assessment
+
+### Tier 1 — Minimum (can generate basic skill)
+- [ ] **What the skill does** — at least a clear description of the task it automates
+
+Warn: "I can build a basic skill from this, but I'll need to assume the trigger description, input/output format, and process steps. The skill may not trigger correctly without a refined description. Want me to proceed, or add more detail?"
+
+### Tier 2 — Solid (good skill)
+Everything in Tier 1, plus:
+- [ ] **Trigger contexts** — when/how Claude should invoke this
+- [ ] **Input/Output** — what goes in, what comes out
+
+### Tier 3 — Full (production-quality skill)
+Everything in Tier 2, plus: detailed process steps, error handling, edge cases, happy-path example.
+
+---
+
+## Conversational Question Guide
+
+Use these to fill gaps — only ask what's missing.
+
+### Opening
+> "Tell me about the skill you want to build. What recurring task should it automate? You can describe it freeform, show me an example of the task being done manually, or paste an existing workflow."
+
+---
 
 **Q0: Does this skill already exist?**
-> Before we build, let's check. Describe the task in 1-2 sentences.
-> I'll check whether an existing skill (from the 341-skill library) already covers this.
-> If yes: should we use the existing skill, customize it, or build a distinct version?
+**Ask when:** Always — before building anything.
+**Ask:** "Describe the task in 1-2 sentences. I'll check whether an existing skill covers this."
+**Default if skipped:** Check anyway based on the description provided.
 
 **Q1: Skill Name & Trigger**
-> What will this skill be called?
-> - Slash command: `/name` (e.g., `/docgen`, `/review-pr`, `/campaign-plan`)
-> - Keyword trigger: phrase Claude recognizes (e.g., "draft announcement", "start my day")
-> - Autonomous: Claude invokes it when detecting a pattern (e.g., whenever a transcript is shared)
-> The name becomes the directory name and the `name` frontmatter field.
+**Ask when:** User hasn't named it or specified invocation.
+**Ask:** "What will this skill be called? Slash command (`/name`), keyword trigger, or autonomous?"
+**Default if skipped:** Derive name from the task description.
 
 **Q2: What Problem Does It Solve?**
-> In 1-3 sentences: what specific, recurring task does this skill handle?
-> What does a user need to do today that this skill will make reliable and repeatable?
+**Ask when:** The "why" isn't clear.
+**Ask:** "What specific, recurring task does this skill handle?"
+**Default if skipped:** Infer from context.
 
 **Q3: Trigger Description (The Critical One)**
-> How should Claude know to use this skill? Give me:
-> - The primary action it performs (start with a verb: "Creates", "Analyzes", "Drafts")
-> - 3-5 specific phrases or contexts that should trigger it
-> - Any file types or domains involved
-> - Should it trigger even when the user doesn't use the exact skill name?
-> Example: "Creates charts from data. Use whenever the user mentions charts, graphs, plotting,
-> visualizing data, or asks to 'show' numbers — even if they don't say 'chart' explicitly."
+**Ask when:** You don't have enough for a strong description field.
+**Ask:** "How should Claude know to use this skill? Give me the primary action + 3-5 specific phrases that should trigger it."
+**Default if skipped:** Generate a description from the task description. Warn: "I've generated a trigger description but it may under-trigger. Review and refine it."
 
-**Q4: Input — What Does the User Provide?**
-> What information does the user give when invoking this skill?
-> Which inputs are required vs optional?
-> What happens if a required input is missing — ask for it or fail gracefully?
+**Q4: Input**
+**Ask when:** What the user provides is unclear.
+**Ask:** "What information does the user give when invoking this skill? Required vs optional?"
+**Default if skipped:** Infer from the task. Mark as INFERRED.
 
-**Q5: The Process — Step by Step**
-> What should Claude do, in order, after receiving the input?
-> Be specific about each step: what Claude reads, asks, generates, or calls.
-> Each step must state what it produces by the end.
+**Q5: The Process**
+**Ask when:** You can't write the step-by-step procedure.
+**Ask:** "What should Claude do, in order, after receiving the input?"
+**Default if skipped:** Infer a basic process. Mark as INFERRED. Warn: "I've inferred the process steps — review carefully."
 
-**Q6: Output — What Does the User Get?**
-> Exact deliverable:
-> - Format: markdown, HTML file, Slack message, JSON, inline response?
-> - Approximate length/structure?
-> - Saved to file or delivered inline in chat?
+**Q6: Output**
+**Ask when:** Deliverable format is unclear.
+**Ask:** "What does the user get? Format, structure, length, saved to file or inline?"
+**Default if skipped:** Assume inline markdown response. Mark as ASSUMED.
 
 **Q7: Supporting Resources**
-> Does this skill need:
-> - `references/` files: docs, guidelines, templates loaded into context on demand?
-> - `scripts/`: Python/bash for deterministic operations (file creation, data processing)?
-> - `assets/`: templates, fonts, icons used in output?
-> Does it depend on MCP tools? (List them — and define fallback if MCP is unavailable)
+**Ask when:** Skill likely needs reference files, scripts, or MCP tools.
+**Ask:** "Does this skill need reference files, scripts, or MCP connections?"
+**Default if skipped:** Assume no supporting resources.
 
 **Q8: Happy Path Example**
-> One complete example from trigger to output:
-> User says: [exact input] → Claude does: [steps] → User gets: [exact output format shown]
-> This becomes the `<example>` block in the skill body.
+**Ask when:** No example provided.
+**Ask:** "Show me one complete example: User says [X] → Claude does [Y] → User gets [Z]."
+**Default if skipped:** Generate an example from the context. Mark as INFERRED.
 
 ---
 
@@ -151,12 +171,14 @@ One-sentence summary.
 ## Generation Checklist
 
 - [ ] Existing skill library checked — not duplicating existing skill
-- [ ] All 8 questions answered before generation starts
+- [ ] Context assessed — tier identified, assumptions listed
+- [ ] User confirmed generation plan
 - [ ] Description field: 50-120 words, starts with action verb, lists 3-5 trigger contexts, slightly pushy
 - [ ] Body: under 500 lines — large reference material moved to `references/` subdirectory
 - [ ] Every procedure step states what it produces
-- [ ] Output format is specific enough that two AIs produce identical structure
+- [ ] Output format specific enough that two AIs produce identical structure
 - [ ] Error handling covers: missing input, unavailable MCP, malformed data
-- [ ] Happy-path example is complete and specific (not hypothetical)
-- [ ] `evals.json` created with 3-10 test prompts (core use case + 2 edge cases + 1 should-NOT-trigger)
+- [ ] Happy-path example is complete and specific
+- [ ] No hallucinated content — process steps traceable to user input or marked INFERRED
+- [ ] `evals.json` created with 3-10 test prompts
 - [ ] Passes Gate 2 (structure complete) and Gate 3 (no vague steps)

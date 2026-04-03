@@ -1,7 +1,7 @@
 # Documentation Content Structure Guide
 
 ## Core Principle
-Write only what readers need to succeed. Every sentence must answer: "Will this help someone do the task?"
+Write documentation that enables LLMs to build QUALITY products that BOTH WORK and FOLLOW user requirements — even when those requirements are loose or not concise. Every sentence must pass two tests: "Will this help the building LLM implement correctly?" and "Is this grounded in the user's actual input?"
 
 ---
 
@@ -698,6 +698,100 @@ After setup:
 
 ---
 
+---
+
+## AI READABILITY STANDARDS
+
+These standards ensure generated docs are optimally parseable and actionable by LLMs building the described product.
+
+### Standard 1 — Constraints First
+
+Every product doc opens with a Constraints & Non-Negotiables section. Hard rules go at the top of the document, not buried in prose. Format: table with Constraint | Reason | Violation Impact columns. The building LLM reads top-down — if constraints are at the bottom, it may have already hallucinated a conflicting approach.
+
+### Standard 2 — Decision Records with Status
+
+Every technology choice gets a decision record: Choice | Why | Alternatives Rejected | Status (CONFIRMED/ASSUMED). Without this, the building LLM treats every decision as arbitrary and may substitute alternatives. A CONFIRMED decision came from the user. An ASSUMED decision was defaulted by Docgen and must be marked as such.
+
+### Standard 3 — Acceptance Criteria as Executable Checks
+
+Write acceptance criteria in GIVEN/WHEN/THEN/VERIFY format. The VERIFY line is critical — it's the exact command or check the building LLM should run to confirm the implementation works.
+
+**BAD:** "Endpoint returns 200"
+**GOOD:**
+```
+GIVEN: User exists with email "test@test.com"
+WHEN: POST /api/auth/login {"email": "test@test.com", "password": "test123"}
+THEN: Response status 200, body contains {token: string, user: {id, email}}
+VERIFY: curl -X POST localhost:3000/api/auth/login -d '{"email":"test@test.com","password":"test123"}' | jq '.token'
+```
+
+### Standard 4 — Dependency Graphs as Blocked-By
+
+Dev plan tasks include `Blocked by: [Task IDs]` to create explicit dependency chains. This prevents the building LLM from starting work that depends on unfinished pieces.
+
+**BAD:** "Phase 3: Build Dashboard (after auth is done)"
+**GOOD:** "Task 3.1: Create `src/app/dashboard/page.tsx` — Blocked by: [2.1, 2.3]. Implements: R4."
+
+### Standard 5 — When-in-Doubt Defaults
+
+For every area where the user's requirements are vague, specify what the building LLM should do. This is the most important standard for handling loose requirements.
+
+**Format:**
+```markdown
+### When-in-Doubt Defaults
+- Error handling → toast notifications for user-facing errors, structured JSON logging for server errors, retry with exponential backoff for external API calls
+- Empty states → show descriptive empty state component with CTA to the relevant creation action
+- Loading states → skeleton screens for content areas, spinner for actions
+- Form validation → client-side validation on blur, server-side on submit, show inline error messages
+- Mobile responsiveness → mobile-first, breakpoints at 640px (sm), 768px (md), 1024px (lg)
+```
+
+Without these, the building LLM either asks (slowing down) or guesses (risking wrong implementation).
+
+### Standard 6 — File-Level Intent Headers
+
+Every file mentioned in the dev plan gets a one-line PURPOSE comment showing what it does and what it depends on:
+
+```
+<!-- PURPOSE: Handles user authentication via magic link. Depends on: lib/email.ts, lib/db.ts -->
+```
+
+This gives the building LLM local context without re-reading the full architecture doc.
+
+### Standard 7 — Anti-Pattern Examples
+
+Show what NOT to do alongside what to do. The building LLM is prone to common patterns that may conflict with the project's constraints.
+
+**BAD:** "Use the auth library correctly"
+**GOOD:**
+```markdown
+| Anti-Pattern | Why It's Wrong | Do This Instead |
+|---|---|---|
+| Creating a custom JWT implementation | Supabase handles auth — custom JWT duplicates logic and creates security gaps | Use `supabase.auth.signInWithOtp()` in `src/lib/auth.ts` |
+| Storing user profile in a separate `profiles` table | Supabase auth already has `auth.users` with metadata | Use `auth.users` + `raw_user_meta_data` JSONB column |
+```
+
+### Standard 8 — No Hallucinated Content
+
+Generated docs must never contain fabricated facts, invented requirements, or assumed decisions presented as confirmed. If information is missing:
+
+1. If the missing info is critical for the current section: add a NEEDS INPUT placeholder
+2. If a reasonable default exists: use it and mark as ASSUMED
+3. If the info can be inferred from other context: infer it and mark as INFERRED
+4. Never present inferred or defaulted content as if the user confirmed it
+
+```markdown
+<!-- NEEDS INPUT: This section requires [specific information].
+     Ask the user: "[exact question to ask]"
+     Cannot be defaulted because: [why this needs real input] -->
+```
+
+### Standard 9 — Assumption Traceability
+
+Every ASSUMED and INFERRED item gets three things: the reasoning (why this default), the impact (what changes if the user overrides it), and the override instruction (what to say to change it). Consolidated in the Assumption Register at the end of each doc.
+
+---
+
 ## Summary Checklist
 
 Before you publish any doc:
@@ -711,9 +805,19 @@ Before you publish any doc:
 - [ ] Can someone complete this list in 5-10 minutes?
 - [ ] Soft requirements clearly marked as optional
 
-### Rest of document:
+### Content section:
 - [ ] Overview: answerable in 1-2 sentences
 - [ ] Steps: numbered, with expected output
 - [ ] Success: clear indicator of "it worked"
 - [ ] Errors: organized by symptom, not by cause
 - [ ] Next steps: linked forward options
+
+### AI Readability:
+- [ ] Constraints section at top of product docs
+- [ ] All decisions have CONFIRMED/ASSUMED status
+- [ ] Acceptance criteria use GIVEN/WHEN/THEN/VERIFY
+- [ ] Dev plan tasks have Blocked-by dependencies
+- [ ] When-in-Doubt Defaults present for ambiguous areas
+- [ ] Anti-patterns included for Architecture and Dev Plan
+- [ ] No hallucinated content — all items traceable to user input or marked ASSUMED/INFERRED
+- [ ] Assumption Register consolidates all assumptions with override instructions

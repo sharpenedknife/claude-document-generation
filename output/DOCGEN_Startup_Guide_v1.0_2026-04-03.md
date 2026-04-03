@@ -1,6 +1,7 @@
 # How to Use the Documentation Builder
-**What this is:** A step-by-step guide for using the Docgen Claude project to generate complete, AI-ready implementation documentation for anything you want to build.
-**Last updated:** April 2026 · v1.0
+**What this is:** A step-by-step guide for setting up and using the Documentation Builder to generate complete, AI-ready implementation documentation for anything you want to build.
+**Last updated:** April 2026 · v2.0
+**GitHub:** https://github.com/sharpenedknife/claude-document-generation
 
 ---
 
@@ -12,37 +13,73 @@ You describe what you want to build. Docgen asks the right questions, then gener
 
 ---
 
-## Step 1 — Set Up the Docgen Claude Project
+## Choose Your Setup Path
+
+There are two ways to use Docgen, depending on where you want to run it:
+
+| Path | Best for | Setup time |
+|------|----------|------------|
+| **Path A — Claude.ai Chat** | Web users, no terminal needed | 5 minutes |
+| **Path B — Cowork / Claude Code** | Power users, full file access | 2 minutes |
+
+---
+
+## Path A — Claude.ai Chat Project (4 files to upload)
 
 This only needs to be done once.
 
-**1.1 Go to claude.ai and create a new project:**
-- Click "Projects" in the left sidebar → "New Project"
+**A.1 Create the project:**
+- Go to [claude.ai](https://claude.ai) → Projects → New Project
 - Name it: `Documentation Builder`
+- Description: `Create & update product docs.`
 
-**1.2 Paste the project instructions:**
-- Click "Set project instructions" in the project
-- Open the file `system/templates/project_instructions/PROJECT_INSTRUCTIONS_Docgen_Production.md` from your Docgen folder
-- Copy the full contents and paste into the instructions field
-- Click Save
+**A.2 Paste the project instructions:**
+- Click "Set project instructions"
+- Open `system/templates/project_instructions/PROJECT_INSTRUCTIONS_Docgen_Production.md`
+- Copy the full contents → paste → Save
 
-**1.3 Upload the knowledge base:**
-- Click the "+" button in the "Project knowledge" panel
-- Upload the entire `system/` folder contents (guides, templates, checklists, examples)
-- Upload the `builders/` folder contents
-- Upload `CLAUDE.md` and `config/token_budgets.json`
-- Wait for processing to complete (may take 1–2 minutes)
+**A.3 Upload the knowledge base (4 files only):**
+- Click "+" in the "Project knowledge" panel
+- Upload these 4 files from the `chat/` folder:
+  1. `CLAUDE.md` (from the repo root)
+  2. `chat/REFERENCE_System.md`
+  3. `chat/REFERENCE_Builders.md`
+  4. `chat/REFERENCE_Templates.md`
+- Wait for processing (~1 minute)
 
-**1.4 Verify it's working:**
-Send this message: *"hi"*
+**A.4 (Optional) Link the GitHub repo:**
+- In the Project settings, add the repo URL: `https://github.com/sharpenedknife/claude-document-generation`
+- This gives Claude access to the full source files when it needs deeper detail
+
+**A.5 Verify it's working:**
+Send: *"hi"*
 
 A correctly configured project responds with the navigation menu showing all 4 build types. If it doesn't show the menu, re-paste the project instructions and save again.
 
 ---
 
+## Path B — Cowork / Claude Code (clone and go)
+
+```bash
+git clone https://github.com/sharpenedknife/claude-document-generation.git
+cd claude-document-generation
+```
+
+**For Claude Code:** Run `claude` in the project directory. CLAUDE.md is read automatically.
+
+**For Cowork:** Select the `claude-document-generation/` folder as your working directory. CLAUDE.md is read automatically.
+
+That's it. No uploading, no pasting instructions. Say "hi" and the menu appears.
+
+---
+
+## Step 1 — Set Up (see Path A or Path B above)
+
+---
+
 ## Step 2 — Open a Chat: The Menu Appears Automatically
 
-Open the Documentation Builder project and start a new chat. **Just say "hi" or anything at all** — Docgen's first response is always the navigation menu:
+Open your Documentation Builder (whether chat project, Cowork, or Claude Code) and start a new chat. **Just say "hi" or anything at all** — Docgen's first response is always the navigation menu:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -73,27 +110,22 @@ Docgen identifies the build type automatically and starts asking the right quest
 
 ---
 
-## Step 3 — Answer Docgen's Questions
+## Step 3 — Provide Context (Your Way)
 
-Docgen asks questions conversationally — not all at once. Answer each one as clearly as you can. The more specific your answers, the more accurate the output.
+No question is mandatory. Provide context however works for you:
 
-**For a product, you'll be asked:**
+- **Answer questions** — Docgen asks conversationally, one at a time. Answer as many or as few as you want.
+- **Paste freeform context** — Drop in existing specs, notes, braindumps, competitor analysis, design docs.
+- **Upload files** — Screenshots, wireframes, existing code, spreadsheets.
+- **Mix and match** — Answer some questions, paste some context, skip the rest.
 
-| Question | What to say |
-|---|---|
-| One-liner | "It helps [who] to [do what] by [how]" |
-| MVP features | List 3–5 features in priority order |
-| Target users | Who uses it, what's their main task |
-| Data entities | What "things" does the product store (users, tasks, orders, etc.) |
-| Tech stack | Name your preferred stack, or say "recommend something for me" |
-| Integrations | Any external services (Stripe, Auth0, Slack, OpenAI, etc.) |
-| AI coding tool | Claude, Cursor, Windsurf, Codex, or other |
-| Existing code? | New project or adding to existing codebase |
+Docgen dynamically figures out if it has enough to generate quality docs. If context is thin, it warns you and lists the assumptions it will make — you decide whether to add more detail or proceed with defaults. Every default gets marked as ASSUMED in the output so you can review and override later.
 
 **Tips for better output:**
 - Be specific about features. "User management" is vague. "Users can invite team members by email, set their role (Admin or Member), and remove them" is actionable.
 - If you don't know the tech stack, say "we're a Node.js team" or "we're a Python team" and Docgen will recommend.
-- The MVP feature list should be the smallest possible version that delivers real value. Docgen will stop you if you list too many.
+- The MVP feature list should be the smallest possible version that delivers real value.
+- If you have existing specs, designs, or notes — paste them. Docgen extracts what it needs and skips questions you've already answered.
 
 ---
 
@@ -245,5 +277,5 @@ No. The Docgen bundle is self-contained — it has its own `CLAUDE.md` for the p
 
 ---
 
-*Documentation Builder v1.4 · April 2026*
+*Documentation Builder v2.0 · April 2026*
 *For issues with the system: update `backlog/SYSTEM_DEBT.md` and regenerate affected docs.*

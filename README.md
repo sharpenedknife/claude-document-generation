@@ -1,187 +1,157 @@
-# Documentation Generation System (docgen)
+# Documentation Builder (Docgen)
 
-Production-grade documentation framework for creating, structuring, and validating high-quality docs at scale.
+AI-powered documentation generation system. Describe what you want to build — get a complete, implementation-ready bundle an AI coding agent can use to start building immediately.
 
-**Status:** ✅ Production Ready (v1.0)
+**Status:** ✅ Production Ready (v2.1)
 
 ---
 
-## What It Is
+## What It Does
 
-docgen is a complete system for generating, validating, and managing technical documentation. It enforces production standards through 5-level quality gates, ensures token efficiency, and provides templates for consistent, high-quality output.
+You describe your project. Docgen asks the right questions, then generates a complete bundle of documentation that an AI coding agent (Claude, Cursor, Windsurf, Codex) can use to build the thing correctly — without you needing to know how to write technical specs.
 
-## Key Features
+**Four build types:**
 
-- **5-Level Quality Gates:** Validation → Structure → Content → Quality → Shipping
-- **Token Optimization:** Budget-aware docs (2K-4K tokens depending on type)
-- **Production Templates:** Canonical structure for all doc types
-- **Automatic DEBT Tracking:** Known limitations, backlog, deprecations
-- **Version Control:** v1.0, v1.1, v2.0 with deprecation process
-- **Multi-Domain:** GTM, Design, Branding, Content, ICP, Web Development
+| Type | What you get | Use when |
+|------|-------------|----------|
+| 🏗️ Product / Startup | 11-doc implementation bundle (PRD · UX · UI · Architecture · Data Schema · API Spec · Setup · Dev Plan · CLAUDE.md · Starter Prompt) | Building an app, SaaS, tool, or platform |
+| 🤖 Claude Project | CLAUDE.md · Project instructions · Knowledge base structure | Setting up a persistent Claude workspace for a team |
+| ⚡ Skill | SKILL.md · evals.json · packaging | Creating a repeatable workflow or `/command` |
+| 🔌 MCP Integration | Setup · API Reference · Auth · Troubleshooting guides | Connecting Claude to a live external tool |
 
-## Quick Start
+---
 
-1. **Read the framework:** `system/guides/SYSTEM_Master_Index.md`
-2. **Understand standards:** `system/guides/SYSTEM_Content_Guide.md`
-3. **See an example:** `system/examples/EXAMPLE_Perfect_Setup_Guide.md`
-4. **Run a doc through gates:** Use checklists in `system/checklists/`
-5. **Output your doc:** `output/{domain}/v1.0/{DOC_NAME}.md`
+## Quick Start (Claude Projects)
+
+1. Go to [claude.ai](https://claude.ai) → Projects → **New Project** → name it `Documentation Builder`
+2. In Project Instructions, paste the contents of `system/templates/project_instructions/PROJECT_INSTRUCTIONS_Docgen_Production.md`
+3. Upload the knowledge base: all files from `system/`, all files from `builders/`, plus `CLAUDE.md` and `config/token_budgets.json`
+4. Open a chat → say **"hi"** → the navigation menu appears automatically
+5. Describe what you want to build — Docgen asks questions, confirms scope, generates your bundle
+
+For detailed setup instructions, see `output/DOCGEN_Startup_Guide_v1.0_2026-04-03.md`.
+
+---
+
+## How It Works
+
+```
+You describe idea
+      ↓
+Docgen identifies build type (Product / Claude Project / Skill / MCP)
+      ↓
+Conversational intake — asks 8 questions, one at a time
+      ↓
+Confirms generation plan (your last chance to adjust scope)
+      ↓
+Generates all docs in dependency order
+      ↓
+Delivers zip bundle
+      ↓
+You paste STARTER_PROMPT into your AI tool → start building
+```
+
+---
 
 ## File Structure
 
 ```
-docgen/
-├── system/              # Framework (read-only reference)
-│   ├── guides/         # 10 production standards
-│   ├── templates/      # Output templates
-│   ├── checklists/     # Quality verification checklists
-│   └── examples/       # Perfect example docs
-├── builders/           # 6 domain builders (ready to populate)
-├── output/             # Generated docs (versioned by domain)
-├── skills/             # Published + suggested reusable skills
-├── projects/           # Claude Projects configurations
-├── config/             # Rules, budgets, domain definitions
-├── metrics/            # Generation logs and tracking
-├── backlog/            # Technical debt (SYSTEM_DEBT.md)
-└── docs/               # System documentation
+Documentation/
+├── CLAUDE.md                        ← Master navigation (start here)
+├── README.md                        ← This file
+│
+├── system/                          ← Read-only framework
+│   ├── guides/                      ← 14 system standards + research
+│   ├── templates/
+│   │   ├── output/                  ← DOC_CANONICAL_TEMPLATE, DEV_PLAN_TEMPLATE, STARTER_PROMPT_TEMPLATE
+│   │   └── project_instructions/   ← Paste into Claude.ai Projects
+│   ├── checklists/                  ← Quality gate verification
+│   └── examples/                   ← Reference: what 85+ quality looks like
+│
+├── builders/                        ← Build-type questionnaires + rules
+│   ├── product/     ★              ← Product builder (11-doc bundle, 90/100 quality target)
+│   ├── claude-project/
+│   ├── skill/
+│   ├── mcp/
+│   ├── ai-docs/
+│   └── code/
+│
+├── output/                          ← All generated docs + examples
+├── config/                          ← Domain definitions, token budgets
+├── backlog/                         ← SYSTEM_DEBT.md
+├── metrics/                         ← LOG_Generation.md
+└── skills/                          ← Drop your own skills here
 ```
-
-## For Different Use Cases
-
-### Building a Doc
-1. Follow `SYSTEM_Content_Guide.md` for structure
-2. Check `SYSTEM_Prerequisites_Guide.md` for prereqs
-3. Use `DOC_CANONICAL_TEMPLATE.md` for format
-4. Run through 5 exit gates using checklists
-5. Name using `SYSTEM_File_Naming.md` pattern
-6. Store in `output/{domain}/v1.0/`
-
-### Creating a Builder (e.g., GTM)
-1. Review `system/guides/SYSTEM_Ecosystem_Strategy.md` (Priority 1)
-2. Create questionnaire in `builders/gtm/builder.md`
-3. Define rules in `builders/gtm/rules.md`
-4. Set token budget in `builders/gtm/token_budget.md`
-5. Output docs using templates
-
-### Setting Up Claude Projects
-1. Copy custom instructions from `system/templates/project_instructions/PROJECT_INSTRUCTIONS_Docgen_Production.md`
-2. Upload as knowledge base:
-   - All files from `system/guides/`
-   - All files from `system/templates/`
-3. Create in Claude Projects
-4. Users now have production-grade doc creation
-
-### Understanding Quality
-- Read: `SYSTEM_Exit_Rules.md` (5-level gates)
-- Read: `SYSTEM_Token_Optimization.md` (budgets + efficiency)
-- Check: `system/checklists/` (verification checklists)
-
-## Production Standards
-
-### 5 Exit Gates (No doc ships without passing all 5)
-
-| Gate | Check | Fail = |
-|------|-------|--------|
-| 1 | Validation | Fix metadata, re-run |
-| 2 | Structure | Add missing sections |
-| 3 | Content Quality | Rewrite for clarity |
-| 4 | Human+AI+Token | Optimize or cut content |
-| 5 | Shipping | All gates + DEBT + metadata |
-
-### Token Budgets
-
-- Setup guide: 2500 tokens
-- GTM strategy: 4000 tokens  
-- API guide: 3000 tokens
-- (See `config/token_budgets.json` for all types)
-
-### Quality Target
-
-- Minimum quality score: 85
-- Quality per token: 0.03+ (quality score ÷ token count)
-
-## Key Files to Know
-
-**Start Here:**
-- `system/guides/SYSTEM_Master_Index.md` — Navigation & quick reference
-- `system/guides/SYSTEM_Content_Guide.md` — Doc section standards
-- `system/guides/SYSTEM_Exit_Rules.md` — Quality gates
-
-**Production Standards:**
-- `system/guides/SYSTEM_File_Naming.md` — Naming conventions
-- `system/guides/SYSTEM_Token_Optimization.md` — Token budgets
-- `system/guides/SYSTEM_Version_Control.md` — Versioning & deprecation
-
-**Templates:**
-- `system/templates/output/DOC_CANONICAL_TEMPLATE.md` — Output format
-- `system/templates/output/TEMPLATE_DEBT_Standard.md` — Backlog format
-- `system/templates/project_instructions/PROJECT_INSTRUCTIONS_Docgen_Production.md` — Claude Projects setup
-
-**Checklists:**
-- `system/checklists/CHECKLIST_Human_Quality.md` — Gate 3 verification
-- `system/checklists/CHECKLIST_AI_Quality.md` — Gate 4 AI portion
-- `system/checklists/CHECKLIST_Token_Efficiency.md` — Gate 4 token portion
-
-## Example Doc
-
-See: `system/examples/EXAMPLE_Perfect_Setup_Guide.md`
-
-This is a perfect example showing all standards correctly applied. Use it as a reference.
-
-## Current Status
-
-✅ **Production Ready v1.0**
-
-- 10 production standards documented
-- 3 output templates created
-- 5-level quality gates defined
-- Token budgets set per doc type
-- Folder structure organized for scale
-- Example doc included
-- 6 domain builders ready to populate
-
-**Not Yet Implemented (see `backlog/SYSTEM_DEBT.md`):**
-- Builder automation framework (P1)
-- Skill suggestion engine (P1)
-- Token validation script (P1)
-- Monthly metrics dashboard (P1)
-- Domain-specific checklists (P2)
-
-## Getting Started
-
-```bash
-# Clone this repo
-git clone https://github.com/your-org/docgen.git
-cd docgen
-
-# Read the master index
-cat system/guides/SYSTEM_Master_Index.md
-
-# See an example
-cat system/examples/EXAMPLE_Perfect_Setup_Guide.md
-
-# Check your first doc against gates
-# Use checklists in system/checklists/
-```
-
-## Contributing
-
-See: `CONTRIBUTING.md`
-
-## License
-
-MIT License — See `LICENSE`
-
-## Questions?
-
-- **Which standards apply to my doc?** → See `system/guides/SYSTEM_Content_Guide.md`
-- **How do I name files?** → See `system/guides/SYSTEM_File_Naming.md`
-- **What's a quality gate?** → See `system/guides/SYSTEM_Exit_Rules.md`
-- **How do I version docs?** → See `system/guides/SYSTEM_Version_Control.md`
-- **What's the token budget?** → See `config/token_budgets.json`
 
 ---
 
-**Built for:** Teams that want production-quality documentation without the chaos.
+## Quality Standards
 
-**Perfect for:** SaaS products, APIs, frameworks, tools, internal wikis.
+Every generated doc passes 5 quality gates before it ships:
+
+| Gate | Checks | Fail = |
+|------|--------|--------|
+| 1 · Validation | File name, metadata, domain | Rename and resubmit |
+| 2 · Structure | All required sections present | Add missing sections |
+| 3 · Content | No vague language, claims backed, code standards | Rewrite |
+| 4 · Quality | Token budget, human review, AI review | Cut or revise |
+| 5 · Shipping | Version stamped, DEBT logged | Confirm and ship |
+
+- **Minimum quality score:** 85/100 (product bundles: 90/100)
+- **Token budgets:** enforced per doc type — see `config/token_budgets.json`
+
+---
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` | Master navigation + rules for the entire system |
+| `system/guides/SYSTEM_Exit_Rules.md` | The 5 quality gates — authoritative |
+| `system/guides/SYSTEM_Build_Decision_Framework.md` | How to identify what type of thing to build |
+| `system/guides/SYSTEM_Content_Guide.md` | Required sections per doc type |
+| `system/templates/output/DOC_CANONICAL_TEMPLATE.md` | The only valid output format |
+| `system/templates/output/DEV_PLAN_TEMPLATE.md` | Development plan structure |
+| `system/templates/output/STARTER_PROMPT_TEMPLATE.md` | AI coding tool starter prompt |
+| `builders/product/BUILDER_Questions.md` | 8 intake questions for product builds |
+| `builders/product/BUILDER_Rules.md` | Rules enforced on every product doc |
+| `output/DOCGEN_Startup_Guide_v1.0_2026-04-03.md` | Human setup + usage guide |
+| `output/DOCGEN_Navigation_Menu.html` | Interactive HTML navigation menu |
+
+---
+
+## Product Bundle Contents (11 docs)
+
+When you build a product, Docgen generates:
+
+```
+{ProductName}_Implementation_Bundle_v1.0_{date}/
+├── PRD_{name}_v1.0.md          ← Feature requirements + acceptance criteria
+├── UX_{name}_v1.0.md           ← User journeys + flows
+├── UI_{name}_v1.0.md           ← Screen list + component specs
+├── PRODUCT_Vision_{name}_v1.0.md
+├── ARCH_System_{name}_v1.0.md  ← Tech stack + folder structure
+├── DATA_Schema_{name}_v1.0.md  ← Database entities + relationships
+├── API_Spec_{name}_v1.0.md     ← All API endpoints
+├── SETUP_Environment_{name}_v1.0.md ← Setup + deployment
+├── DEV_Plan_{name}_v1.0.md     ← ★ Implementation plan (phases → files → criteria)
+├── CLAUDE.md                   ← For the new project (read this first)
+└── STARTER_PROMPT_{name}.md    ← ★ Paste into AI tool to begin building
+```
+
+The ★ files are what you use to start building. Paste `STARTER_PROMPT` into Claude, Cursor, or Windsurf. The AI reads all context files and begins Phase 0.
+
+---
+
+## Contributing
+
+See `CONTRIBUTING.md`
+
+## License
+
+MIT License — see `LICENSE`
+
+---
+
+*Documentation Builder v2.1 · April 2026*
+*Repo: [github.com/sharpenedknife/claude-document-generation](https://github.com/sharpenedknife/claude-document-generation)*
