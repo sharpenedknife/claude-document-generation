@@ -245,6 +245,21 @@ Chunk 4: Troubleshooting section (split by error type if >5 errors)
 
 ---
 
+## Compressed AI Metadata (Product Bundle Variant)
+
+For product bundle docs (read by AI coding agents, not RAG pipelines), compress the `**AI metadata:**` block to a single line:
+
+```markdown
+### Step 2: Install Dependencies
+1. Run: `npm install`
+   Expected: `node_modules/` created
+   **AI:** pre=package.json · post=node_modules/ · err→"npm ERR! ERESOLVE"
+```
+
+The full 3-5 line format is for Claude Project knowledge base docs. For product bundles targeting Cursor/Codex/Windsurf, use the single-line format. It saves ~40 tokens per step with equivalent machine-readability.
+
+---
+
 ## Writing Rules for AI-First Docs
 
 1. **Exact commands, not descriptions** — `npm install stripe` not "Install the payment library"

@@ -1,10 +1,56 @@
 {
   "metadata": {
-    "version": "1.1",
-    "updated": "2026-04-03",
+    "version": "1.6",
+    "updated": "2026-04-06",
     "note": "All budgets are HARD LIMITS. Exceeding by >10% = Gate 4 fail. Quality target: 0.03+ quality points per token."
   },
   "budgets": {
+    "prd": {
+      "budget_tokens": 2500,
+      "rationale": "PRD: problem statement, user types, MVP features as user stories (max 5), acceptance criteria per feature, out-of-scope list, success metrics. No implementation detail — that's Architecture's job.",
+      "quality_per_token_target": 0.034
+    },
+    "ux-research": {
+      "budget_tokens": 1800,
+      "rationale": "UX Research: user flows (5 steps min each), screen names, key decisions, pain points. Diagram as text tree. No wireframes — describe component names only.",
+      "quality_per_token_target": 0.047
+    },
+    "ui-spec": {
+      "budget_tokens": 1800,
+      "rationale": "UI Spec: component list with names, layout description per screen, interaction states, design tokens (colors, spacing). Reference framework component library — don't invent names.",
+      "quality_per_token_target": 0.047
+    },
+    "product-vision": {
+      "budget_tokens": 1000,
+      "rationale": "Vision doc: one-liner, problem narrative (3 sentences max), 3-year target state, what success looks like. Short by design — this is for alignment, not detail.",
+      "quality_per_token_target": 0.085
+    },
+    "data-schema": {
+      "budget_tokens": 2000,
+      "rationale": "Data Schema: entity list, fields per entity (name + type + required + default), key relationships, indexes. Table format required. No prose explanations of field purpose.",
+      "quality_per_token_target": 0.043
+    },
+    "dev-plan": {
+      "budget_tokens": 3500,
+      "rationale": "Dev Plan: Phase 0 (setup) through MVP launch. Each task: file path + acceptance criterion + dependency. Phase milestones with testable definitions of done. No implementation guidance — just the task list.",
+      "quality_per_token_target": 0.024
+    },
+    "starter-prompt": {
+      "budget_tokens": 800,
+      "rationale": "Starter Prompt: single self-contained prompt pasted into AI tool. What is being built (1 sentence), files provided (list), read CLAUDE.md first, Phase 0 Task 1. No explanatory prose.",
+      "quality_per_token_target": 0.106
+    },
+    "claude-md-product": {
+      "budget_tokens": 1500,
+      "rationale": "CLAUDE.md for generated product (not this docgen system). Follows 200-line rule. Sections: What This Is, Commands, Architecture, Code Style, Important Notes.",
+      "quality_per_token_target": 0.057
+    },
+    "bundle-product": {
+      "budget_tokens": 22000,
+      "rationale": "Total cap for the full 11-doc product bundle (PRD+UX+UI+Vision+ARCH+Schema+API+Setup+DevPlan+CLAUDE.md+Starter). Prevents scope creep across the full generation session.",
+      "quality_per_token_target": 0.03,
+      "note": "If any single doc approaches its cap AND the bundle is approaching 22K, prioritize Dev Plan and Architecture — cut Vision and UX first."
+    }
     "project-setup": {
       "budget_tokens": 5000,
       "rationale": "Full Claude project from idea: CLAUDE.md + project instructions + folder map + domain list. Complex output, higher budget justified."

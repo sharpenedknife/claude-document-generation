@@ -10,6 +10,22 @@ When a user asks for help building something with Claude/AI, the first decision 
 
 ---
 
+## Disambiguation Script (use when Q0 response is ambiguous)
+
+If the user's Q0 answer could match more than one build type, ask:
+
+> "Quick check — are you building:
+>    **A)** Software that runs for your users (app, SaaS, tool) → code docs + dev plan
+>    **B)** A Claude assistant for yourself or your team → project instructions + knowledge base
+>    **C)** A reusable workflow or slash command → SKILL.md + evals
+>    **D)** A connection to an external tool or API → MCP server docs
+>
+> Which one fits?"
+
+Then route to the correct builder based on the answer. No answer = re-ask Q0 more specifically. Do not guess the build type.
+
+---
+
 ## The Four Build Types
 
 There are four distinct types of artifacts the system generates. Identify the correct type at Q0 — every subsequent doc, template, and output bundle depends on it.

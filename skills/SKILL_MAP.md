@@ -1,204 +1,268 @@
 # Skill Map — AI Routing Table for Doc Generation
-**What this is:** Operational instructions for Docgen. At each generation stage, this map tells you which skill to apply. Skills encode domain expertise — using them produces better docs than generating from scratch.
-**When to read:** At Step 3 of the Interactive Operating Mode, before showing the generation plan. Re-read at each generation stage (Step 4).
+**What this is:** Operational instructions for Docgen in Cowork mode. At each generation stage this map tells you exactly how to apply the skill.
+**When to read:** Step 3 of Interactive Operating Mode (before showing the plan). Re-read at each generation stage (Step 4).
 **Last updated:** April 2026
+
+## Write Lean — Pre-Generation Rules (Apply to Every Stage)
+
+Read these before writing any doc. They override any verbose instinct.
+
+| Rule | Do | Don't |
+|------|----|-------|
+| BLUF | Lead every section with the conclusion | Warm up to the point |
+| Structure | Use tables for all structured data | Explain tables in prose |
+| Scope | Reference other docs by filename | Repeat their content |
+| Length | Stop when content is complete | Fill to the budget ceiling |
+| Criteria | GIVEN/WHEN/THEN, one line each | Prose acceptance criteria |
+| Code | Minimal runnable example | Full boilerplate with logging |
+| Sections | ≤ 120 words per prose body | Multi-paragraph explanations |
+
+**Bundle rule:** Track running token total against 22,000-token bundle cap. If nearing 22K, cut Vision doc first, then UX — never cut Dev Plan or Architecture.
+
+**Check before moving to next stage:** estimated tokens so far ÷ stages remaining ≤ remaining budget ÷ remaining stages.
 
 ---
 
-## Routing Rules
+## Token Budget Rules — Read Before Using This Map
 
-1. **Before generating any doc**, find the current stage in this map.
-2. **Apply the skill:**
-   - **Cowork / Claude Code:** Call the skill using the `Skill` tool. Pass intake context (Q0–Q8 answers + previously generated docs) as input. Use the skill's output as the raw draft.
-   - **Claude.ai Chat:** Skills aren't callable. Instead, apply the specific domain expertise each skill represents. The skill name tells you WHAT expertise to bring — e.g., `skills-library:architecture-designer` means: apply system design patterns, scalability tradeoffs, and framework-correct file structures.
-3. **Format and gate the draft.** Apply DOC_CANONICAL_TEMPLATE formatting. Run all 5 quality gates. Skill output is a starting point, not a finished doc.
-4. **If no skill matches**, generate from the template directly.
-5. **Stack-specific skills are mandatory** — when the user picks a tech stack in Q5, the corresponding framework skill must be applied during Architecture, Setup, Dev Plan, and Starter Prompt generation. Skipping = generic file paths and config instead of framework-correct ones.
+1. **Read SKILL_MAP.md ONCE per session** — at Step 3 (generation plan), not before. Do not re-read at each stage. Keep it in context after the first read.
+
+2. **Read each SKILL.md ONLY at its stage** — do not preload skills. At Stage 1 (PRD): read `skills/writing-prds/SKILL.md`. At Stage 5: read `skills/architecture-designer/SKILL.md`. Never read Stage 5 skills during Stage 1.
+
+3. **Read at most 2 SKILL.md files per generation stage.** If a stage calls a primary skill + secondary skill, read both. Stop there. The stack-specific skill counts as one of the two allowed reads.
+
+4. **Stack skills: read ONE that matches Q5.** The stack table has 31 entries. Read only the one matching the user's stack. Never scan multiple stack skills to compare.
+
+5. **Skip skills for stages you're not generating.** If the user only wants a PRD, do not read `architecture-designer/SKILL.md`. Load skills on demand for the docs being generated, nothing more.
+
+---
+
+## How Skills Are Called in Cowork
+
+Two modes — use the right one per stage:
+
+| Mode | When | How |
+|------|------|-----|
+| **Skill tool** | Skill is installed and callable | `Skill tool: skill-name` |
+| **Read + apply** | Skill SKILL.md is in `skills/` folder | `Read: skills/{name}/SKILL.md` → follow its instructions as the generation playbook |
+
+**Rule:** Skill output = raw draft. Always format via DOC_CANONICAL_TEMPLATE and run all 5 quality gates after.
 
 ---
 
 ## Product Builder (Type 1) — Generation Order
 
-### Stage 1: PRD Generation
-**Call:** `skills-library:writing-prds`
+### Stage 1: PRD
+**Read:** `skills/writing-prds/SKILL.md` → apply as generation playbook
 **Input:** Q0 context, Q1 one-liner, Q2 MVP features, Q3 user flows
-**Fallback if not available:** `product-management:write-spec`
-**Then:** Run through DOC_CANONICAL_TEMPLATE + quality gates
 
-### Stage 2: UX Generation
-**Call:** `design:user-research` (if user hasn't validated flows) → then `skills-library:ui-ux-pro-max`
+### Stage 2: UX Research
+**Read:** `skills/user-research/SKILL.md` → apply if user hasn't validated flows
+**Skill tool:** `conducting-user-interviews` (if conducting live research sessions)
 **Input:** PRD output + Q3 user types and flows
-**Also call:** `design:ux-copy` for microcopy in the flows
-**Then:** Quality gates
 
-### Stage 3: UI Generation
-**Call:** `skills-library:ui-ux-pro-max`
+### Stage 3: UI Design
+**No local skill for ui-ux-pro-max or ui-styling.** Apply expertise directly:
+- Use standard UX component patterns, accessibility principles, flow diagrams
+- If React/Next.js stack: apply shadcn/ui + Tailwind component naming conventions
+- Read `skills/nextjs-developer/SKILL.md` (or relevant stack skill) for component structure
 **Input:** UX output + Q3 flows
-**Also call:** `design:accessibility-review` on the generated screen specs
-**Also call:** `design:design-handoff` to generate component specs
-**Stack-specific:** If React/Next.js → also call `skills-library:ui-styling` for shadcn/Tailwind component mapping
-**Then:** Quality gates
 
 ### Stage 4: Vision
-**No skill available.** Generate from template using Q0–Q3 context.
+**Skill tool:** `defining-product-vision`
+**Input:** Q0–Q3 context
+**Fallback:** Generate from DOC_CANONICAL_TEMPLATE directly — no skill required
 
 ### Stage 5: Architecture
-**Call:** `skills-library:architecture-designer`
+**Read:** `skills/architecture-designer/SKILL.md` → apply as generation playbook
+**Also read:** `skills/api-designer/SKILL.md` → apply for API layer decisions
+**Stack-specific (mandatory):** Read the framework skill from the Stack Table below
+**AI-native stack (LLM product, agent, RAG, chatbot):** Additionally call:
+- `Skill tool: prompt-building:prompt-engineering-patterns` → apply for prompt architecture, system prompt design, and token efficiency decisions
+- `Skill tool: prompt-building:langchain-architecture` → apply for chain design, agent patterns, and memory architecture
 **Input:** PRD + Data entities (Q4) + Tech stack (Q5) + Integrations (Q6)
-**Also call:** `skills-library:api-designer` for API layer decisions
-**Stack-specific (mandatory):** Call the framework skill from the stack table below. Feed it the architecture context and ask it to validate/enhance the file structure and technology choices.
-**Then:** Quality gates
 
 ### Stage 6: Data Schema
-**Call:** `skills-library:sql-pro` or `skills-library:postgres-pro` (based on Q5 database choice)
+**Read:** `skills/postgres-pro/SKILL.md` (PostgreSQL) or `skills/sql-pro/SKILL.md` (other SQL)
+**If GraphQL:** Read `skills/graphql-architect/SKILL.md` instead
 **Input:** Architecture output + Q4 data entities + user flows from UX
-**Then:** Quality gates
 
 ### Stage 7: API Spec
-**Call:** `skills-library:api-designer`
+**Read:** `skills/api-designer/SKILL.md` → apply as generation playbook
+**If GraphQL:** Read `skills/graphql-architect/SKILL.md` instead
 **Input:** Architecture output + Data Schema + PRD features
-**If GraphQL:** Call `skills-library:graphql-architect` instead
-**Then:** Quality gates
 
 ### Stage 8: Environment Setup
-**Call:** `skills-library:devops-engineer` (for Docker/CI/CD) or `skills-library:cloud-architect` (for cloud deployment)
+**Read:** `skills/devops-engineer/SKILL.md` (Docker/CI/CD) or `skills/cloud-architect/SKILL.md` (cloud)
+**Stack-specific:** Also read framework skill for setup commands and config
 **Input:** Architecture + Tech stack + Integrations (Q6)
-**Stack-specific:** Call framework skill for setup commands and configuration
-**Then:** Quality gates
 
 ### Stage 9: Dev Plan
-**Call:** `skills-library:feature-forge` for requirements → task breakdown
-**Also call:** Stack-specific framework skill to validate phase tasks and file paths
-**Also call:** `engineering:testing-strategy` for the testing phase
-**Also call:** `engineering:deploy-checklist` for the deployment phase
+**Read:** `skills/feature-forge/SKILL.md` → apply for requirements → task breakdown
+**Also read:** Stack-specific framework skill → validate phase tasks and file paths
 **Input:** ALL previous docs (PRD through Setup)
-**Then:** Quality gates (90/100 target)
 
 ### Stage 10: CLAUDE.md
-**No skill needed.** Generate from template — this is Docgen's core output.
+**No skill.** Generate from DOC_CANONICAL_TEMPLATE — this is Docgen's core output.
 
 ### Stage 11: Starter Prompt
-**Call:** `skills-library:vibe-coding` for AI coding best practices
-**Also call:** `skills-library:prompt-engineer` to optimize the prompt
+**Read:** `skills/vibe-coding/SKILL.md` → apply for AI coding best practices
+**Also read:** `skills/prompt-engineer/SKILL.md` → apply to optimize the prompt
+**AI-native stack:** Additionally call `Skill tool: prompt-building:prompt-engineering-patterns` → apply chain-of-thought, few-shot, and structured output patterns to the starter prompt itself
 **Input:** Dev Plan + CLAUDE.md + tool choice (Q7)
-**Then:** Quality gates
 
 ---
 
 ## Claude Project Builder (Type 2) — Generation Order
 
 ### Project Instructions
-**Call:** `skills-library:prompt-engineer`
+**Read:** `skills/prompt-engineer/SKILL.md` → apply for writing effective project instructions
+**Always call:** `Skill tool: prompt-building:prompt-engineering-patterns` → apply for role-based system prompt design, structured output format, and progressive disclosure patterns
 **Input:** Q0 context, purpose, target users
 
 ### Knowledge Base Structure
-**Call:** `skills-library:rag-architect` (if project needs retrieval over large docs)
+**Read:** `skills/rag-architect/SKILL.md` (if project needs retrieval over large docs)
 **Input:** What knowledge the project needs access to
 
 ### Custom Skills (if project needs them)
-**Call:** `skill-creator`
+**Skill tool:** `skill-creator` — always, no exceptions
 **Input:** Identified workflow patterns from intake
 
 ### MCP Integrations (if project needs live tools)
-**Call:** `skills-library:mcp-developer` or `mcp-builder`
+**Read:** `skills/mcp-developer/SKILL.md` → apply for implementation details
 **Input:** Q6 integrations list
 
-### Dev Plan + Starter Prompt
-**Call:** `skills-library:prompt-engineer` for the starter prompt
-**Call:** `skills-library:vibe-coding` for coding best practices
+### Starter Prompt
+**Read:** `skills/prompt-engineer/SKILL.md` + `skills/vibe-coding/SKILL.md`
 
 ---
 
 ## Skill Builder (Type 3) — Generation Order
 
 ### SKILL.md
-**Call:** `skill-creator` — **always, no exceptions**
+**Skill tool:** `skill-creator` — always, no exceptions
 **Input:** All intake answers (Q0–Q8)
 **This skill handles the entire lifecycle:** create, structure, validate
 
 ### evals.json
-**Call:** `ai-evals`
+**Skill tool:** `ai-evals`
 **Input:** SKILL.md output + expected behaviors
-
-### Before Building — Duplicate Check
-**Call:** Search the 341-skill catalog. If a matching skill exists, recommend customizing it instead of building from scratch. Categories to search:
-- Check skill name/description against user's stated purpose
-- Check `skills-library:*` variants first (these are installable)
 
 ---
 
 ## MCP Server Builder (Type 4) — Generation Order
 
 ### Setup Guide + API Reference
-**Call:** `mcp-builder` — **always, no exceptions**
-**Also call:** `skills-library:mcp-developer` for implementation details
+**Read:** `skills/mcp-developer/SKILL.md` — always, no exceptions
+**Also read:** `skills/api-designer/SKILL.md` for tool schema design
 **Input:** All intake answers
 
-### Tool Schema Design
-**Call:** `skills-library:api-designer`
-**Input:** What the MCP server needs to read/write
-
 ### Auth Guide
-**Call:** `mcp-builder` (handles auth patterns)
+Follow auth patterns in `skills/mcp-developer/SKILL.md`
 
 ### Testing
-**Call:** `engineering:testing-strategy`
+**Skill tool:** `ai-evals` for eval design
 
 ---
 
 ## Stack-Specific Skill Table (Mandatory at Stages 5, 8, 9, 11)
 
-When the user answers Q5 (tech stack), look up the framework skill below. Call it during Architecture, Setup, Dev Plan, and Starter Prompt generation to validate technology-specific decisions.
+When the user answers Q5 (tech stack), look up the skill below. Read the SKILL.md and apply it during Architecture, Setup, Dev Plan, and Starter Prompt generation.
 
-| Stack component | Skill to call |
-|----------------|---------------|
-| Next.js | `skills-library:nextjs-developer` |
-| React | `skills-library:react-expert` |
-| Vue 3 | `skills-library:vue-expert` |
-| Angular | `skills-library:angular-architect` |
-| React Native / Expo | `skills-library:react-native-expert` |
-| Flutter | `skills-library:flutter-expert` |
-| Swift / iOS | `skills-library:swift-expert` |
-| NestJS | `skills-library:nestjs-expert` |
-| Express / Node.js | `skills-library:javascript-pro` |
-| FastAPI | `skills-library:fastapi-expert` |
-| Django | `skills-library:django-expert` |
-| Rails | `skills-library:rails-expert` |
-| Laravel | `skills-library:laravel-specialist` |
-| Spring Boot | `skills-library:spring-boot-engineer` |
-| .NET / ASP.NET Core | `skills-library:dotnet-core-expert` |
-| Go | `skills-library:golang-pro` |
-| Rust | `skills-library:rust-engineer` |
-| PHP | `skills-library:php-pro` |
-| Python | `skills-library:python-pro` |
-| TypeScript | `skills-library:typescript-pro` |
-| PostgreSQL | `skills-library:postgres-pro` |
-| SQL (general) | `skills-library:sql-pro` |
-| GraphQL | `skills-library:graphql-architect` |
-| WebSockets | `skills-library:websocket-engineer` |
-| Kubernetes | `skills-library:kubernetes-specialist` |
-| Terraform / IaC | `skills-library:terraform-engineer` |
-| Docker / CI/CD | `skills-library:devops-engineer` |
-| Playwright / E2E | `skills-library:playwright-expert` |
-| WordPress | `skills-library:wordpress-pro` |
-| Shopify | `skills-library:shopify-expert` |
-| Salesforce | `skills-library:salesforce-developer` |
-
----
-
-## Post-Bundle Skills (recommend to user after delivery)
-
-After delivering the bundle, tell the user about these skills for their next phase:
-
-### Go-to-Market
-`marketing:campaign-plan`, `marketing:content-creation`, `marketing:email-sequence`, `marketing:seo-audit`, `skills-library:launch-marketing`, `skills-library:positioning-messaging`, `skills-library:copywriting`, `sales:competitive-intelligence`, `sales:draft-outreach`
-
-### Growth & Optimization
-`skills-library:page-cro`, `skills-library:signup-flow-cro`, `skills-library:onboarding-cro`, `skills-library:ab-test-setup`, `skills-library:churn-prevention`
-
-### Pre-Build Validation (recommend if user hasn't validated)
-`discovery:start-discovery`, `discovery:make-research`, `discovery:make-solution`, `discovery:make-decomposition`, `design:research-synthesis`, `skills-library:customer-research`, `skills-library:measuring-product-market-fit`
+| Stack component | Read this file |
+|----------------|----------------|
+| Next.js | `skills/nextjs-developer/SKILL.md` |
+| React | `skills/react-expert/SKILL.md` |
+| Vue 3 | `skills/vue-expert/SKILL.md` |
+| Angular | `skills/angular-architect/SKILL.md` |
+| React Native / Expo | `skills/react-native-expert/SKILL.md` |
+| Flutter | `skills/flutter-expert/SKILL.md` |
+| Swift / iOS | `skills/swift-expert/SKILL.md` |
+| NestJS | `skills/nestjs-expert/SKILL.md` |
+| Express / Node.js | `skills/javascript-pro/SKILL.md` |
+| FastAPI | `skills/fastapi-expert/SKILL.md` |
+| Django | `skills/django-expert/SKILL.md` |
+| Rails | `skills/rails-expert/SKILL.md` |
+| Laravel | `skills/laravel-specialist/SKILL.md` |
+| Spring Boot | `skills/spring-boot-engineer/SKILL.md` |
+| .NET / ASP.NET Core | `skills/dotnet-core-expert/SKILL.md` |
+| Go | `skills/golang-pro/SKILL.md` |
+| Rust | `skills/rust-engineer/SKILL.md` |
+| PHP | `skills/php-pro/SKILL.md` |
+| Python | `skills/python-pro/SKILL.md` |
+| TypeScript | `skills/typescript-pro/SKILL.md` |
+| PostgreSQL | `skills/postgres-pro/SKILL.md` |
+| SQL (general) | `skills/sql-pro/SKILL.md` |
+| GraphQL | `skills/graphql-architect/SKILL.md` |
+| WebSockets | `skills/websocket-engineer/SKILL.md` |
+| Kubernetes | `skills/kubernetes-specialist/SKILL.md` |
+| Terraform / IaC | `skills/terraform-engineer/SKILL.md` |
+| Docker / CI/CD | `skills/devops-engineer/SKILL.md` |
+| Playwright / E2E | `skills/playwright-expert/SKILL.md` |
+| WordPress | `skills/wordpress-pro/SKILL.md` |
+| Shopify | `skills/shopify-expert/SKILL.md` |
+| Salesforce | `skills/salesforce-developer/SKILL.md` |
 
 ---
 
-*This file is read by Docgen at generation time. It is not a user-facing document.*
+## Missing Skills (not found locally)
+
+These skills were referenced in the original SKILL MAP but are not available locally. Apply domain expertise directly when these stages are reached:
+
+| Missing skill | Stage | Apply instead |
+|--------------|-------|---------------|
+| `ui-ux-pro-max` | UI Design (Stage 3) | Standard UX patterns + stack component library conventions |
+| `ui-styling` | UI Design React/Next.js | Read `skills/nextjs-developer/SKILL.md` for component structure |
+
+---
+
+## Skill Tool Reference (Callable in Cowork)
+
+These skills are installed and callable directly via the Skill tool:
+
+| Task | Skill tool name |
+|------|----------------|
+| Define product vision | `defining-product-vision` |
+| User interviews / research | `conducting-user-interviews` |
+| Build a new skill | `skill-creator` |
+| Evaluate LLM outputs | `ai-evals` |
+| Build with LLMs | `building-with-llms` |
+| Competitive analysis | `competitive-analysis` |
+| Customer research | `customer-research` |
+| Co-author documentation | `doc-coauthoring` |
+| Evaluate tech options | `evaluating-new-technology` |
+| **Write / optimize any prompt or system instruction** | `prompt-building:prompt-engineering-patterns` |
+| **Score / evaluate prompt output quality** | `prompt-building:llm-evaluation` |
+| **Build multi-step prompt chains or agent loops** | `prompt-building:langchain-architecture` |
+| **Semantic few-shot example retrieval** | `prompt-building:similarity-search-patterns` |
+
+---
+
+---
+
+## Research Hub Skills (load for research-type builds)
+
+| Stage | Read this file |
+|-------|---------------|
+| Document / RAG research | `skills/rag-implementation/SKILL.md` |
+| Search across large corpus | `skills/hybrid-search-implementation/SKILL.md` |
+| Embedding / chunking decisions | `skills/embedding-strategies/SKILL.md` |
+| Competitive research | `skills/competitive-landscape/SKILL.md` |
+| Market sizing | `skills/market-sizing-analysis/SKILL.md` |
+| Presenting findings | `skills/data-storytelling/SKILL.md` |
+| Cross-session context | `skills/context-driven-development/SKILL.md` |
+| Multi-agent research team (Cowork) | `skills/team-composition-patterns/SKILL.md` |
+| Parallel task planning (Cowork) | `skills/task-coordination-strategies/SKILL.md` |
+
+## Prompt Building Skills (load when writing or evaluating prompts)
+
+| Task | Read this file |
+|------|---------------|
+| Write / optimize any prompt | `skills/prompt-engineering-patterns/SKILL.md` |
+| Score / evaluate prompt output | `skills/llm-evaluation/SKILL.md` |
+| Build multi-step prompt chains | `skills/langchain-architecture/SKILL.md` |
+| Semantic few-shot example retrieval | `skills/similarity-search-patterns/SKILL.md` |
+
+---
+
+*In Cowork mode: this file is the authoritative skill routing table. The SKILL MAP in the Claude.ai knowledge base applies only in Claude.ai Chat sessions.*

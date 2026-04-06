@@ -37,6 +37,29 @@ Three modes:
 
 ---
 
+## RESEARCH GATE (mandatory — runs after Q0, before Q1)
+
+After Q0 is answered, STOP. Do not ask Q1 yet.
+
+Tell the user:
+
+> "Before I generate your AI doc, collect these first:
+>
+> **1. What is the exact behavior you need documented?**
+>    Run the feature or workflow yourself once. Write down what you observe — not what the spec says.
+>
+> **2. Who will read this doc?**
+>    Beginner / intermediate / advanced. This locks the vocabulary and depth.
+>
+> **3. What question should this doc answer when someone searches for it?**
+>    Write the exact search query a reader would use. This becomes the title.
+>
+> Come back with these 3 things."
+
+Wait for user to return. Proceed to Q1 only after they respond.
+
+---
+
 ## Mode 2: Update Existing Doc
 
 **Q1: What is the file name of the existing doc?**
@@ -50,6 +73,23 @@ Three modes:
 
 **Q4: Are there sections to preserve exactly?**
 > List sections that must not change.
+
+---
+
+## Context Tier Assessment (run before confirming generation plan)
+
+Before showing the generation plan, assess how complete the user's intake is:
+
+- **Tier 1 — Minimal (proceed with caution):** User answered Q0 only, or gave fewer than 3 sentences of detail total.
+  → Say: "I have minimal context. I'll be making significant assumptions — every unverified item will be marked ASSUMED. Want to add more before I generate, or proceed with assumptions?"
+
+- **Tier 2 — Solid:** Q0 through Q5 answered with specific, non-vague content.
+  → Note any remaining defaults. Confirm and proceed.
+
+- **Tier 3 — Full:** All questions answered with concrete, specific details.
+  → Best output possible. Confirm and proceed.
+
+Never skip this assessment. Never present assumptions as confirmed facts.
 
 ---
 

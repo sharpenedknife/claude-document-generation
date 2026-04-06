@@ -135,6 +135,11 @@ No critical items. System ships complete.
 - **Reason:** No gate automation pipeline (P1 item 1.1)
 - **Workaround:** Use checklists in system/checklists/ to verify manually
 
+### Limitation 4: Token Budgets Unvalidated Against Real Sessions
+- **Scope:** Token budgets in `config/token_budgets.json` are estimates from templates, not measured from real generation sessions.
+- **Reason:** System has not yet run 10+ real production sessions to calibrate (Verification 1 in this file).
+- **Workaround:** After every 5 real sessions, measure actual tokens/stage and adjust budgets if needed.
+
 ---
 
 ## Content Decisions
@@ -174,10 +179,11 @@ No critical items. System ships complete.
 ## Verification Needed
 
 ### Verification 1: Token Budgets Realistic
-- **Current Status:** Estimated from templates. Not yet validated against real docs.
-- **Who Should Verify:** Use first 10 generated docs to test
-- **How to Verify:** Measure actual tokens vs. budget, adjust if needed
-- **Blocker?:** No (can ship with caveat "budgets preliminary")
+- **Current Status:** Budgets expanded in v1.6 to cover product bundle doc types (PRD, UX, UI, Vision, Data Schema, Dev Plan, Starter Prompt). Not yet validated against real generated docs.
+- **Who Should Verify:** Log actual token counts in `metrics/LOG_Generation.md` for first 10 generated docs per type
+- **How to Verify:** Compare LOG_Generation.md `tokens` column to `config/token_budgets.json` budgets. If avg actual > 80% of budget for any type, tighten generation rules. If avg actual < 50% of budget, lower the budget.
+- **Monitoring trigger:** After every 5 docs of same type, review ratio. If quality/token < 0.028, initiate budget review.
+- **Blocker?:** No (budgets are now type-specific; v1.6 generation behavioral rules enforce lean writing)
 
 ### Verification 2: Exit Gates Sufficient
 - **Current Status:** Defined theoretically. Not tested with real user workflows.
@@ -211,6 +217,13 @@ If patterns emerge, suggest creating reusable skills:
 
 | Date | Change | Reason |
 |------|--------|--------|
+| 2026-04-04 | Added Research Gates to all 4 builders (T-01–T-04) | Forces data collection before generation — prevents ASSUMED-heavy docs |
+| 2026-04-04 | Added lazy skill loading rules to SKILL_MAP, project instructions, CLAUDE.md (T-05–T-07) | Prevents context window waste from preloading unused skills |
+| 2026-04-06 | Wired prompt-building:* plugin skills to SKILL_MAP stages 5+11 and BUILDER_Rules (product + claude-project) | AI-native products now call installed skills instead of reading local SKILL.md files |
+| 2026-04-06 | Added product bundle doc-type budgets to token_budgets.json (T-23) | PRD, UX, UI, Vision, Data Schema, Dev Plan, Starter Prompt now have specific token caps |
+| 2026-04-06 | Added generation behavioral rules to SYSTEM_Token_Optimization.md (T-24) | Lean writing rules enforced during generation, not just at review |
+| 2026-04-06 | Added token constraint header to DOC_CANONICAL_TEMPLATE.md (T-25) | Every doc now declares its budget upfront |
+| 2026-04-06 | Added Write Lean pre-generation checklist to SKILL_MAP.md (T-26) | Generator applies token constraints before writing first word |
 | 2026-04-02 | Created initial SYSTEM_DEBT.md | System shipped v1.0, logged improvement backlog |
 
 ---

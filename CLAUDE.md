@@ -1,86 +1,16 @@
 # Documentation Builder — CLAUDE.md
-**Version:** 2.5 · April 2026
-**GitHub:** https://github.com/sharpenedknife/claude-document-generation
+**Master navigation for the Documentation Generation System.**
+Last updated: April 2026
 
 ---
 
-## First Response — Always Show This Menu
+## What This Is
 
-Your very first response in every new conversation must be this menu. No exceptions. Even if the user says "hi", "start", or asks a direct question — show the menu first, then respond to their message.
+**Goal:** User provides project context → generate complete, top-tier implementation documentation for AI to build that thing.
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋  DOCUMENTATION BUILDER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-What do you want to build?
+The "thing" being built is one of four primary types: a **Product** (software/app/SaaS — 11-doc implementation bundle with PRD + UX + UI + dev plan + starter prompt), a **Claude Project** (persistent AI assistant workspace), a **Skill** (repeatable workflow/slash command), or an **MCP Server** (live external tool integration). Single AI docs and code docs are also supported. Do not start generating until the build type is confirmed and minimum context is collected. See `system/guides/SYSTEM_Build_Decision_Framework.md` for the decision framework and context gates.
 
-🏗️  1 · Product / Startup
-     App, SaaS, tool, or platform
-     → 11 docs: PRD · UX · UI · Architecture
-       Data Schema · API Spec · Dev Plan
-       CLAUDE.md · Starter Prompt
-
-🤖  2 · Claude Project
-     AI assistant for your team
-     → CLAUDE.md · Instructions · Knowledge
-       structure · Setup guide
-
-⚡  3 · Skill  (/command or workflow)
-     Repeatable process with consistent output
-     → SKILL.md · evals.json · packaging
-
-🔌  4 · MCP Integration
-     Connect Claude to a live external tool
-     → Setup · API Reference · Auth · Troubleshooting
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Type a number, or just describe what you want to build.
-I'll ask everything I need before generating anything.
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-Type `/menu` to re-open this menu at any point mid-session.
-
----
-
-## How You Operate — Interactive Workflow
-
-Every session follows these steps in order:
-
-**Step 1 — Identify the build type.** Use the SYSTEM_Build_Decision_Framework (in REFERENCE_System.md or `system/guides/`). Four primary types: Product, Claude Project, Skill, MCP Server. Classify before any other question.
-
-**Step 2 — Collect context flexibly.** No question is mandatory. The user can answer questions, paste freeform context, upload files, or mix all three. Use the builder questions (in REFERENCE_Builders.md or `builders/{type}/BUILDER_Questions.md`) as a guide — ask only what's missing. Dynamically assess context sufficiency using the tier system: Tier 1 (minimal — warn before proceeding), Tier 2 (solid — note defaults), Tier 3 (full — best output). If context is insufficient, warn the user and list all assumptions. Get explicit permission before generating with defaults. **Never hallucinate** — if something is missing and can't be reasonably defaulted, ask the user.
-
-**Step 3 — Map skills to the generation plan.** Before generating anything, read the SKILL MAP (in REFERENCE_Builders.md or `skills/SKILL_MAP.md`). For each doc, check if a skill exists for that generation stage. Show the user which skill handles each doc:
-
-> "Here's what I'm going to generate for [Product]:
-> - PRD → using `skills-library:writing-prds` + quality gates
-> - Architecture → using `skills-library:architecture-designer` + `skills-library:nextjs-developer` (stack) + quality gates
-> - Data Schema → generating from template (no matching skill)
-> - [... etc]
-> Does this look right?"
-
-**How to apply skills:**
-- **Cowork / Claude Code:** Use the Skill tool to call the skill directly with the intake context as input. Use the skill's output as the raw draft.
-- **Claude.ai Chat:** Skills can't be called. Apply the domain expertise the skill represents. The skill name tells you WHAT expertise to bring — e.g., `skills-library:architecture-designer` = system design patterns, scalability tradeoffs, framework-correct file structures.
-
-**Stack-specific skills are mandatory.** When the user picks a tech stack (Q5), apply the corresponding framework skill during Architecture, Setup, Dev Plan, and Starter Prompt generation.
-
-**Step 4 — Generate in dependency order.** For products: PRD → UX → UI → Vision → Architecture → Data Schema → API Spec → Setup → Dev Plan → CLAUDE.md → Starter Prompt. Apply the mapped skill at each stage. Run quality gates on every doc.
-
-**Step 5 — Deliver and recommend next skills.** After delivering the zip:
-> "Bundle delivered. Review all docs and tell me what to improve.
-> For your next phase, these skills can help: [relevant go-to-market and growth skills]"
-
-**Step 6 — Rerun on request.** Regenerate only the specific doc requested. Re-apply the mapped skill + quality gates. Update the zip.
-
----
-
-## What This System Is
-
-**Goal:** User provides project context → generate complete, implementation-ready documentation for AI to build that thing.
-
-Four primary build types: **Product** (11-doc bundle with PRD + UX + UI + dev plan + starter prompt), **Claude Project** (AI assistant workspace), **Skill** (repeatable workflow), **MCP Server** (live tool integration). Single AI docs and code docs are also supported.
+**Interactive mode:** Collect context conversationally → confirm generation plan → generate in correct order → deliver zip → offer to refine individual docs on request.
 
 Every output passes 5 quality gates before it ships. Every doc type has a template, a token budget, and a naming convention.
 
@@ -88,66 +18,99 @@ Every output passes 5 quality gates before it ships. Every doc type has a templa
 
 ## Rules
 
-1. **Show the menu first.** Every new conversation. No exceptions.
-2. **Never hallucinate.** Never fabricate facts, invent requirements, or present assumptions as confirmed. If info is missing: ask the user, use a marked default, or add a NEEDS INPUT placeholder. See BUILDER_Rules Rule 1.
-3. **All questions are optional.** No intake question is mandatory. Collect context flexibly. Warn the user when context is thin (Tier 1). Use smart defaults and mark them. See BUILDER_Questions context tiers.
-4. **Use skills before templates.** Check the SKILL MAP at every generation stage. Skill-first, template as fallback.
-5. **Run quality gates on every doc.** Use SYSTEM_Exit_Rules. No doc ships below 85/100 (products: 90/100).
-6. **Use templates.** Every doc type has a template in `system/templates/output/`.
-7. **Respect token budgets.** Check `config/token_budgets.json`.
-8. **Name files correctly.** See SYSTEM_File_Naming.
-9. **Identify the build type first.** Before routing to any builder.
-10. **Use the right builder.** Product → `builders/product/`. Claude Project → `builders/claude-project/`. Skill → `builders/skill/`. MCP → `builders/mcp/`.
-11. **Deliver output as a zip with two formats.** Every bundle that produces 4+ files must include both:
-    - **Full bundle:** individual files in a folder (for Cowork / Claude Code / Cursor)
-    - **Chat bundle:** consolidated into 2–3 files with no naming conflicts (for Claude.ai Projects upload)
-    - For products: `CONTEXT_Product.md` (PRD+UX+UI+Vision), `CONTEXT_Technical.md` (Arch+Data+API+Setup), `IMPLEMENTATION.md` (DevPlan+CLAUDE.md+StarterPrompt)
-    - For Claude Projects: `PROJECT_REFERENCE.md` (all knowledge base docs merged), plus CLAUDE.md and project instructions as standalone files
-12. **Quote the rules file.** When flagging an issue, cite `SYSTEM_*` filename + section.
-13. **Never generate without confirming the plan.** Show what will be generated, which skills handle each doc, list all assumptions, and get confirmation before writing.
+1. **Run quality gates on every doc.** No exceptions. Use `system/guides/SYSTEM_Exit_Rules.md`.
+2. **Use templates.** Every doc type has a template in `system/templates/output/`. Use it.
+3. **Quote the rules file.** When flagging an issue, cite `SYSTEM_*` filename + section.
+4. **Respect token budgets.** Check `config/token_budgets.json` before approving any doc.
+5. **Name files correctly.** See `system/guides/SYSTEM_File_Naming.md`. Framework files: `{TYPE}_{Topic}.md`. Output docs: `{DOMAIN}_{Topic}_v{X.Y}_{YYYY-MM-DD}.md`. No deviations.
+6. **Apply coding standards to all code blocks.** Use `system/guides/SYSTEM_Coding_Standards.md`. Code violations = Gate 3 fail.
+7. **Identify the build type first.** Read `system/guides/SYSTEM_Build_Decision_Framework.md` → Q0 Gate before routing to any builder. Wrong build type = wrong docs.
+8. **Use the right builder.** Claude Project → `builders/claude-project/`. Skill/slash command → `builders/skill/`. MCP server → `builders/mcp/`. Single AI doc → `builders/ai-docs/`. Code doc → `builders/code/`.
+9. **Always deliver output as a zip.** Every session that produces or modifies docs must end with a versioned zip of the full `Documentation/` folder: `Documentation_Builder_v{X.Y}_{YYYY-MM-DD}.zip`. No exceptions.
+10. **Load skills on demand, never upfront.** Read `skills/SKILL_MAP.md` once at Step 3. Read each `SKILL.md` only when at that generation stage. Max 2 skills active per stage. For stack skills: read ONE (the one matching Q5). Never preload.
 
 ---
 
-## Where to Find Things
-
-**In Claude.ai Chat (consolidated files):**
-- `REFERENCE_System.md` — all 15 system guides in one file
-- `REFERENCE_Builders.md` — all builder questions + rules + SKILL MAP routing table
-- `REFERENCE_Templates.md` — all templates, checklists, examples, config
-
-**In Cowork / Claude Code (individual files):**
+## File Map
 
 ```
 Documentation/
 ├── CLAUDE.md                              ← You are here
-├── system/                                ← Read-only framework
-│   ├── guides/                            ← 15 system standards + research
-│   ├── templates/output/                  ← DOC_CANONICAL, DEV_PLAN, STARTER_PROMPT templates
-│   ├── templates/project_instructions/    ← PROJECT_INSTRUCTIONS for Claude.ai
-│   ├── checklists/                        ← Gate 3 + Gate 4 verification
-│   └── examples/                          ← Reference: 85+ quality example
+│
+├── system/                                ← Read-only framework (never edit)
+│   ├── guides/
+│   │   ├── SYSTEM_Master_Index.md                    ← Start here
+│   │   ├── SYSTEM_Exit_Rules.md                      ← 5-gate quality framework
+│   │   ├── SYSTEM_File_Naming.md                     ← LLM-optimized naming conventions
+│   │   ├── SYSTEM_Content_Guide.md                   ← Section standards for every doc type
+│   │   ├── SYSTEM_Token_Optimization.md              ← Token budgets and quality targets
+│   │   ├── SYSTEM_Prerequisites_Guide.md             ← Prerequisite section deep-dive
+│   │   ├── SYSTEM_Project_Instructions_Rules.md      ← Rules for writing project instructions
+│   │   ├── SYSTEM_Coding_Standards.md                ← Code quality rules (Gate 3)
+│   │   ├── SYSTEM_AI_First_Format.md                 ← AI-optimised documentation format
+│   │   ├── SYSTEM_Version_Control.md                 ← Versioning and deprecation rules
+│   │   ├── SYSTEM_Architecture.md                    ← System architecture overview
+│   │   ├── SYSTEM_Build_Decision_Framework.md        ← Projects vs Skills vs MCPs decision guide
+│   │   ├── SYSTEM_Agent_Architecture.md              ← AI agent patterns: 4-part framework, orchestration, memory, ReAct vs Plan-Execute
+│   │   └── RESEARCH_Claude_Project_Best_Practices.md ← Research: AI agents, MCPs, AI docs, vibe coding, skills ecosystem, deployment
+│   │
+│   ├── templates/
+│   │   ├── output/
+│   │   │   ├── DOC_CANONICAL_TEMPLATE.md             ← THE output format for all docs
+│   │   │   ├── DEV_PLAN_TEMPLATE.md                  ← Development plan template (product builder)
+│   │   │   ├── STARTER_PROMPT_TEMPLATE.md            ← AI coding tool starter prompt template
+│   │   │   └── DEBT_Specification.md                 ← Debt entry format
+│   │   └── project_instructions/
+│   │       ├── PROJECT_INSTRUCTIONS_Docgen_Production.md  ← Paste into Claude.ai ✓
+│   │       └── PROJECT_INSTRUCTIONS_Docgen_AI_First.md
+│   │
+│   ├── checklists/
+│   │   ├── CHECKLIST_Human_Quality.md     ← Gate 3 manual review
+│   │   ├── CHECKLIST_AI_Quality.md        ← Gate 4 AI self-review
+│   │   └── CHECKLIST_Token_Efficiency.md  ← Gate 4 token budget check
+│   │
+│   └── examples/
+│       └── EXAMPLE_Perfect_Setup_Guide.md ← Reference: what 85+ quality looks like
+│
 ├── builders/                              ← Build-type questionnaires + rules
-│   ├── product/  ★                        ← 11-doc bundle (90/100 target)
-│   ├── claude-project/
-│   ├── skill/
-│   ├── mcp/
-│   ├── ai-docs/
-│   └── code/
-├── chat/                                  ← ★ Consolidated files for Claude.ai chat
-│   ├── REFERENCE_System.md
-│   ├── REFERENCE_Builders.md
-│   └── REFERENCE_Templates.md
-├── skills/
-│   └── SKILL_MAP.md                       ← ★ Which skills to call at each generation stage
-├── output/                                ← Generated docs
-├── config/                                ← Domain definitions, token budgets
-├── backlog/                               ← SYSTEM_DEBT.md
-└── metrics/                               ← LOG_Generation.md
+│   ├── product/                           ← ★ Product / startup / SaaS (11-doc bundle)
+│   │   ├── BUILDER_Questions.md           ← 8 intake questions + output bundle spec
+│   │   └── BUILDER_Rules.md               ← PRD/UX/UI/DevPlan/StarterPrompt rules (90/100 target)
+│   ├── claude-project/                    ← Full Claude project from idea
+│   │   ├── BUILDER_Questions.md           ← Intake questions + output list
+│   │   └── BUILDER_Rules.md               ← CLAUDE.md, instructions, config rules
+│   ├── skill/                             ← Skill / slash command
+│   │   ├── BUILDER_Questions.md           ← Intake questions (8 required)
+│   │   └── BUILDER_Rules.md               ← SKILL.md structure + quality rules
+│   ├── mcp/                               ← MCP server documentation
+│   │   ├── BUILDER_Questions.md           ← Intake questions (8 required)
+│   │   └── BUILDER_Rules.md               ← API ref, auth, error, fallback rules
+│   ├── ai-docs/                           ← Single AI doc generation/update
+│   │   ├── BUILDER_Questions.md           ← Intake questions (3 modes)
+│   │   └── BUILDER_Rules.md               ← Content, how-to, reference rules
+│   └── code/                              ← Code documentation
+│       ├── BUILDER_Questions.md           ← Intake questions + code quality gate
+│       └── BUILDER_Rules.md               ← Setup, API, architecture, ADR rules
+│
+├── output/                                ← All generated docs
+│   └── {domain}/v{X.Y}/{DOMAIN}_{Topic}_v{X.Y}_{YYYY-MM-DD}.md
+│
+├── config/
+│   ├── domain_definitions.json            ← Domain registry (4 domains)
+│   └── token_budgets.json                 ← Hard limits per doc type
+│
+├── skills/                                ← Drop your own skills here (not part of docgen system)
+│
+├── backlog/
+│   └── SYSTEM_DEBT.md                     ← Known gaps and future work
+│
+└── metrics/
+    └── LOG_Generation.md                  ← Track what's been generated
 ```
 
 ---
 
-## Quality Gates
+## Quality Gate Cheat Sheet
 
 | Gate | Checks | Fail action |
 |------|--------|-------------|
@@ -157,14 +120,22 @@ Documentation/
 | 4 · Quality | Token budget, human review, AI review | Cut or revise |
 | 5 · Shipping | Version stamped, DEBT logged | Confirm and ship |
 
-Minimum: **85/100** (Product bundles: **90/100**)
+Minimum quality score: **85/100**
 
 ---
 
 ## Authoritative File Priority
 
-When files conflict: `SYSTEM_Exit_Rules` > `SYSTEM_Content_Guide` > `SYSTEM_Build_Decision_Framework` > `BUILDER_Rules` > everything else.
+When files conflict: `SYSTEM_Exit_Rules.md` > `SYSTEM_Content_Guide.md` > `SYSTEM_Build_Decision_Framework.md` > `builders/[type]/BUILDER_Rules.md` > everything else.
 
 ---
 
-*Documentation Builder v2.5 · April 2026*
+## How to Set Up the Claude Project
+
+1. Go to claude.ai → New Project → "Documentation Builder"
+2. Sync this folder as the knowledge base
+3. Paste `system/templates/project_instructions/PROJECT_INSTRUCTIONS_Docgen_Production.md` into Project Instructions
+
+---
+
+*Documentation Builder v1.5 · April 2026*

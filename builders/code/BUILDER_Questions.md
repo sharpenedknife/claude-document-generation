@@ -36,10 +36,50 @@
 
 ---
 
+## RESEARCH GATE (mandatory — runs after Q0, before Q1)
+
+After Q0 is answered, STOP. Do not ask Q1 yet.
+
+Tell the user:
+
+> "Before I document your code, gather these:
+>
+> **1. Paste or attach the code to be documented.**
+>    I will not document code I haven't read. No exceptions.
+>
+> **2. What does a correct run of this code look like?**
+>    Paste a sample input and its expected output.
+>
+> **3. Who maintains this code?**
+>    New team member / senior dev / external API consumer — this locks the depth and format.
+>
+> Come back with the code and these answers."
+
+Wait for user to return. Proceed to Q1 only after they respond.
+
+---
+
 ## Outputs to Generate
 
 1. **`CODE_[TOPIC]_v1.0_[DATE].md`** — The documentation
 2. **`CODE_[TOPIC]_DEBT.md`** — Known gaps (missing error signatures, untested commands, etc.)
+
+---
+
+## Context Tier Assessment (run before confirming generation plan)
+
+Before showing the generation plan, assess how complete the user's intake is:
+
+- **Tier 1 — Minimal (proceed with caution):** User answered Q0 only, or gave fewer than 3 sentences of detail total.
+  → Say: "I have minimal context. I'll be making significant assumptions — every unverified item will be marked ASSUMED. Want to add more before I generate, or proceed with assumptions?"
+
+- **Tier 2 — Solid:** Q0 through Q5 answered with specific, non-vague content.
+  → Note any remaining defaults. Confirm and proceed.
+
+- **Tier 3 — Full:** All questions answered with concrete, specific details.
+  → Best output possible. Confirm and proceed.
+
+Never skip this assessment. Never present assumptions as confirmed facts.
 
 ---
 

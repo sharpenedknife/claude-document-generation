@@ -4,6 +4,80 @@ Docs must be high-quality AND efficient. This defines token budgets and optimiza
 
 ---
 
+## Generation Behavioral Rules
+
+These rules apply **during writing**, not at review. Internalize before writing the first word of any doc.
+
+### Rule 1 — BLUF: Conclusion First
+
+State the conclusion or key fact in the first sentence of every section. Explanation follows. Never warm up to a point.
+
+```
+❌  "There are several approaches to consider when designing authentication..."
+✅  "Use JWT with refresh tokens. Store refresh tokens in httpOnly cookies."
+```
+
+### Rule 2 — Tables Over Paragraphs
+
+Any comparison, list of options, or structured data (fields, endpoints, errors) goes in a table. Prose explanations of structured data are always more tokens than equivalent tables.
+
+```
+❌  "The User entity has an id field which is a UUID, a name field which is a string..."
+✅  | Field | Type | Required | Default |
+    |-------|------|----------|---------|
+    | id    | UUID | yes      | gen()   |
+```
+
+### Rule 3 — No Cross-Doc Repetition
+
+In a multi-doc bundle, each doc owns one topic. Never restate context from another doc — reference it by filename.
+
+```
+❌  "As defined earlier, the User entity has the following fields: id (UUID)..."
+✅  "User entity fields: see DATA_Schema.md § User"
+```
+
+### Rule 4 — Section Body Cap: 120 Words
+
+Each prose section body is capped at 120 words (~160 tokens). If more detail is needed, split into a sub-section or move to a separate doc. Exception: code blocks don't count toward the word cap.
+
+### Rule 5 — Decision Records: 3 Lines Max
+
+Every CONFIRMED/ASSUMED decision record in the Assumption Register:
+- Line 1: Decision + status (CONFIRMED/ASSUMED)
+- Line 2: Rationale (one clause)
+- Line 3: Impact if wrong (one clause)
+
+No prose narrative around decision records.
+
+### Rule 6 — Acceptance Criteria: GIVEN/WHEN/THEN Only
+
+```
+❌  "The login feature should work correctly and handle errors appropriately."
+✅  GIVEN: valid credentials WHEN: POST /auth/login THEN: 200 + JWT returned
+```
+
+One line per criterion. No prose explanation of what the criterion means.
+
+### Rule 7 — Code Blocks: Minimal But Runnable
+
+Show the exact command or minimal working example. No defensive boilerplate (try/catch, logging, comments) unless error handling is the point of the example.
+
+```
+❌  // Full example with error handling, logging, and edge cases
+    async function createUser(data) {
+      try { ... } catch (e) { logger.error(e); throw e; }
+    }
+
+✅  await db.user.create({ data })
+```
+
+### Rule 8 — Never Pad to Fill Budget
+
+Token budget = ceiling, not target. A 1,200-token PRD that passes all gates is better than a 2,500-token PRD. Quality score does not increase by using more tokens.
+
+---
+
 ## Core Principle
 
 **Quality per token** = quality_score ÷ token_count

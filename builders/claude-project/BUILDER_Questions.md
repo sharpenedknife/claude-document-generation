@@ -5,90 +5,82 @@
 
 ---
 
-## How Intake Works — Flexible Context Collection
+## Intake Questions
 
-No question is mandatory. Users can provide context however they want — answer questions, paste existing notes, describe the idea freeform, or upload reference materials. Claude dynamically assesses whether enough context exists to generate quality output.
-
----
-
-## Context Assessment
-
-### Tier 1 — Minimum (can generate, heavy defaults)
-- [ ] **What Claude does** — at least a sentence describing the project purpose
-
-Warn: "I have the basic idea but will need to assume the user type, key tasks, output formats, and quality standards. Want me to proceed with defaults, or add more detail?"
-
-### Tier 2 — Solid (good generation)
-Everything in Tier 1, plus:
-- [ ] **Who uses it** — primary user type
-- [ ] **Key tasks** — at least 2-3 things Claude will do
-
-### Tier 3 — Full (best output)
-Everything in Tier 2, plus: domains, connected tools, output types, quality requirements.
-
----
-
-## Conversational Question Guide
-
-Use these to fill gaps — only ask what's missing from the user's input.
-
-### Opening
-> "Tell me about the Claude project you want to build. What should Claude do, and who will use it? You can describe it however you like — freeform, bullet points, or paste existing notes."
-
----
+Ask these in order. Do not generate until all answers collected.
 
 **Q1: Project Name**
-**Ask when:** User hasn't named the project.
-**Ask:** "What's the name of this Claude project?"
-**Default if skipped:** Derive from the purpose description.
+> What's the name of this Claude project? (e.g., "Documentation Builder", "Code Reviewer", "Sales Enablement Assistant")
 
-**Q2: Core Purpose**
-**Ask when:** You can't summarize what Claude does in this project.
-**Ask:** "Describe the project in 1–3 sentences. What will Claude do? What problem does it solve?"
-**Default if skipped:** Cannot default — this is the minimum Tier 1 context. Ask again.
+**Q2: Core Purpose (The Idea)**
+> Describe the project in 1–3 sentences. What will Claude do in this project? What problem does it solve?
 
 **Q3: Primary User**
-**Ask when:** You don't know who uses this.
-**Ask:** "Who will use this project day-to-day? Are they technical?"
-**Default if skipped:** Infer from purpose. Mark as INFERRED.
+> Who will use this project day-to-day? (e.g., software engineer, marketing manager, sales rep, founder)
+> Are they technical? What's their level of familiarity with Claude?
 
 **Q4: Key Tasks**
-**Ask when:** You can't list what Claude will do.
-**Ask:** "List the top 3–5 tasks Claude will perform. Be specific."
-**Default if skipped:** Infer from purpose. Mark as INFERRED.
+> List the top 3–5 tasks Claude will perform in this project. Be specific.
+> Example: "Write SEO blog posts", "Review pull requests", "Generate cold emails from prospect data"
 
 **Q5: Domains / Topics**
-**Ask when:** Subject areas are unclear.
-**Ask:** "What subject areas does this project touch?"
-**Default if skipped:** Infer from tasks.
+> What subject areas does this project touch? (e.g., code, marketing, sales, documentation, design, data)
 
 **Q6: Connected Tools**
-**Ask when:** Project likely needs external connections.
-**Ask:** "Will this project connect to external tools via MCP?"
-**Default if skipped:** Assume none.
+> Will this project connect to external tools via MCP? (e.g., Slack, Jira, Ahrefs, Notion, Google Drive)
+> List any known integrations.
 
 **Q7: Output Types**
-**Ask when:** Output format matters for the project.
-**Ask:** "What types of outputs should Claude produce?"
-**Default if skipped:** Assume markdown docs + inline chat responses.
+> What types of documents or outputs should Claude produce?
+> Example: "Markdown docs", "JSON configs", "HTML pages", "Word documents", "Slack messages"
 
 **Q8: Quality Requirements**
-**Ask when:** User hasn't mentioned standards.
-**Ask:** "Any specific quality gates, review processes, or standards Claude must follow?"
-**Default if skipped:** Assume general quality guidelines, no special gates.
+> Are there specific quality gates, review processes, or standards Claude must follow?
+> Example: "All code must pass linting", "Docs must pass 5-gate quality check", "Responses under 200 words"
 
 ---
 
-## Context Confirmation
+## RESEARCH GATE (mandatory — runs after Q0, before Q1)
 
-Before generating, show confirmed vs. assumed:
+After Q0 is answered, STOP. Do not ask Q1 yet.
 
-> "Here's what I'm working with:
-> **Confirmed:** [items from user input]
-> **Assumed:** [defaults with reasoning]
+Tell the user:
+
+> "Before I design your Claude Project, go collect these 4 things and come back:
 >
-> Generating: CLAUDE.md, Project Instructions, System Guide, Domain Config, Token Budgets, README
-> Proceed?"
+> **1. What does the person using this assistant do manually today?**
+>    Write out the exact steps they follow — this becomes the knowledge base structure.
+>
+> **2. What files, docs, or reference material does Claude need to know?**
+>    List them by name — these become knowledge base uploads.
+>
+> **3. Write 3 real example requests users will send this assistant.**
+>    These become the project instruction examples and test cases.
+>
+> **4. What should Claude NEVER do in this project?**
+>    Constraints drive instruction quality more than capabilities. List at least 3.
+>
+> Come back with these 4 answers."
+
+Wait for the user to return before proceeding to Q1.
+If they want to skip: warn about ASSUMED items, proceed only on explicit confirmation.
+
+---
+
+## Context Tier Assessment (run before confirming generation plan)
+
+Before showing the generation plan, assess how complete the user's intake is:
+
+- **Tier 1 — Minimal (proceed with caution):** User answered Q0 only, or gave fewer than 3 sentences of detail total.
+  → Say: "I have minimal context. I'll be making significant assumptions — every unverified item will be marked ASSUMED. Want to add more before I generate, or proceed with assumptions?"
+
+- **Tier 2 — Solid:** Q0 through Q5 answered with specific, non-vague content.
+  → Note any remaining defaults. Confirm and proceed.
+
+- **Tier 3 — Full:** All questions answered with concrete, specific details.
+  → Best output possible. Confirm and proceed.
+
+Never skip this assessment. Never present assumptions as confirmed facts.
 
 ---
 
@@ -96,9 +88,9 @@ Before generating, show confirmed vs. assumed:
 
 Based on answers, generate in this order:
 
-1. **`CLAUDE.md`** — Master navigation
+1. **`CLAUDE.md`** — Master navigation (use `builders/claude-project/rules.md` for structure rules)
 2. **`system/guides/SYSTEM_Master_Index.md`** — Quick reference for the domain
-3. **`system/templates/project_instructions/PROJECT_INSTRUCTIONS_[Name].md`** — Project instructions
+3. **`system/templates/project_instructions/PROJECT_INSTRUCTIONS_[Name].md`** — Project instructions (follow `SYSTEM_Project_Instructions_Rules.md` exactly)
 4. **`config/domain_definitions.json`** — Domain registry
 5. **`config/token_budgets.json`** — Token budgets per doc type
 6. **`README.md`** — Setup guide (3 steps: create project → sync folder → paste instructions)
@@ -107,11 +99,11 @@ Based on answers, generate in this order:
 
 ## Generation Checklist
 
-- [ ] Context assessed — tier identified, assumptions listed
-- [ ] User confirmed generation plan (or said "proceed" with defaults)
+- [ ] All 8 questions answered before generation starts
 - [ ] CLAUDE.md is ≤ 200 lines
 - [ ] Project instructions are 500–800 words
 - [ ] Project instructions follow 6-section structure from `SYSTEM_Project_Instructions_Rules.md`
-- [ ] All ASSUMED items marked in output
-- [ ] No hallucinated content — everything traceable to user input or marked ASSUMED
+- [ ] Domain definitions reflect actual domains used in this project
+- [ ] Token budgets set per doc type
+- [ ] README has exact 3-step setup
 - [ ] All outputs pass Gate 1 before delivery

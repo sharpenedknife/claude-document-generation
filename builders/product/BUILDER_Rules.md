@@ -4,106 +4,17 @@
 
 ---
 
-## Rule 0 — Skill-First Generation
-
-Every doc in the bundle follows this 3-step process:
-
-**Step A — Check the SKILL MAP.** Find the current generation stage in the SKILL MAP (in REFERENCE_Builders.md, or `skills/SKILL_MAP.md` in Cowork). It tells you which skill to use.
-
-**Step B — Apply the skill.**
-- *Cowork / Claude Code:* Call the skill using the Skill tool. Pass the intake context as input. Use the skill's output as the raw draft.
-- *Claude.ai Chat:* Skills aren't callable. Apply the domain expertise the skill represents. Example: SKILL_MAP says "call `skills-library:architecture-designer`" → generate the architecture doc using system design patterns, scalability tradeoffs, and file structure conventions appropriate to the tech stack. The skill name tells you WHAT expertise to bring.
-- *No matching skill:* Generate from DOC_CANONICAL_TEMPLATE directly.
-
-**Step C — Quality gates.** Format the draft per DOC_CANONICAL_TEMPLATE. Run all 5 gates. The skill output is a starting point, not a finished doc.
-
-**Stack-specific skills are mandatory** at Architecture, Setup, Dev Plan, and Starter Prompt stages. When the user picks a tech stack (Q5), look up the corresponding framework skill in the SKILL MAP stack table. Apply it alongside the stage skill. Skipping the stack skill = the generated docs will have generic file paths and config instead of framework-correct ones.
-
----
-
-## Rule 1 — Never Hallucinate Facts or Decisions
-
-**This is the highest-priority content rule.** Generated docs must NEVER contain fabricated facts, invented requirements, or assumed decisions presented as confirmed.
-
-**What counts as hallucination:**
-- Inventing features the user didn't mention and presenting them as requirements
-- Making technical decisions (database choice, API design, auth method) without either user input or explicit default-marking
-- Adding user flows, personas, or use cases not grounded in the user's context
-- Citing specific performance numbers, market data, or statistics without source
-- Writing acceptance criteria for features that don't exist in the confirmed scope
-
-**What to do instead:**
-- If a fact is missing and required for the doc: **stop and ask the user**
-- If a decision can be reasonably defaulted: **mark it as ASSUMED** and explain the reasoning
-- If a section can't be written without information the user hasn't provided: **write a placeholder** that says exactly what's needed:
-
-```markdown
-<!-- NEEDS INPUT: This section requires [specific information].
-     Ask the user: "[exact question to ask]"
-     Cannot be defaulted because: [why this needs real input] -->
-```
-
-- If you're unsure whether something is confirmed or inferred: **treat it as inferred** and mark it
-
-**The test:** Could the user read every statement in the generated docs and say "yes, that's what I said or approved"? If not, it's either hallucinated or needs an ASSUMED/INFERRED marker.
-
----
-
-## Rule 2 — Context Sufficiency Warning
-
-Before generating any docs, assess context completeness using the tier system in BUILDER_Questions.md.
-
-**If Tier 1 only (minimal context):**
-- MUST warn the user before proceeding
-- MUST list every assumption that will be made
-- MUST get explicit permission: "proceed with defaults" or "let me add more context"
-- Generated docs will have frequent ASSUMED/INFERRED markers
-
-**If Tier 2 (solid context):**
-- Note remaining defaults briefly
-- Can proceed after showing the generation plan
-
-**If Tier 3 (full context):**
-- Proceed with generation plan confirmation
-
-**At any tier:** If the user says "proceed" or "go ahead" — generate. Never block a user who wants to move forward. But the warnings ensure informed consent.
-
----
-
-## Rule 3 — Smart Defaults with Transparency
-
-When the user skips a question or provides incomplete context, apply these defaults:
-
-| Missing Info | Default | Reasoning |
-|---|---|---|
-| Tech stack | Next.js + Supabase + Vercel | Most common for solo/small team web SaaS |
-| AI tool | Cursor | Most popular AI coding tool |
-| Auth | Supabase Auth (email + OAuth) | Integrated with default DB recommendation |
-| Deployment | Vercel | Zero-config for Next.js |
-| User types | Single user type, derived from product description | Simplest valid assumption |
-| Data entities | Inferred from features + always includes Users | Users entity is universal |
-| Integrations | None unless features imply them | Conservative — don't add complexity |
-| Existing code | New project | Start fresh is the common case |
-
-**Every default MUST be:**
-1. Stated in the Context Confirmation before generation
-2. Marked inline in the generated doc with `*(ASSUMED)*` or `*(INFERRED)*`
-3. Accompanied by a brief reasoning comment
-4. Overridable — if the user says "change X to Y", regenerate affected docs
-
----
-
-## Rule 4 — Dev Plan Is Always Generated Last
+## Rule 1 — Dev Plan Is Always Generated Last
 
 The DEV_Plan doc synthesizes every other doc in the bundle. It cannot be written until ARCH, DATA, API, and SETUP are complete and reviewed. Any doc generated before its dependencies = quality gate fail.
 
-Generation order: PRD → UX → UI → Vision → Architecture → Data Schema → API Spec → Environment Setup → **Dev Plan** → CLAUDE.md → Starter Prompt.
+Generation order: Vision → Architecture → Data Schema → API Spec → Environment Setup → **Dev Plan** → CLAUDE.md → Starter Prompt.
 
 Never deviate from this order.
 
 ---
 
-## Rule 5 — Dev Plan Phases Must Reference Specific Files
+## Rule 2 — Dev Plan Phases Must Reference Specific Files
 
 Every task in every phase must name:
 - The exact file to create or modify (e.g., `src/models/user.ts`, `migrations/001_users.sql`)
@@ -115,7 +26,7 @@ Vague tasks like "build the authentication system" = Gate 3 fail. Rewrite as:
 
 ---
 
-## Rule 6 — Phase 0 Always Exists
+## Rule 3 — Phase 0 Always Exists
 
 Every dev plan starts with Phase 0: Project Setup. It covers:
 - Repository initialization (commands copy-pasteable)
@@ -127,7 +38,7 @@ Phase 0 must be completable by a developer in under 30 minutes. If it's longer, 
 
 ---
 
-## Rule 7 — Starter Prompt Is Self-Contained
+## Rule 4 — Starter Prompt Is Self-Contained
 
 The starter prompt must work when pasted verbatim into a fresh AI session with zero prior context. It includes:
 - What is being built (one-liner)
@@ -140,7 +51,7 @@ Test: if you removed every other doc and only gave the AI the starter prompt, co
 
 ---
 
-## Rule 8 — CLAUDE.md Is for the New Project, Not Docgen
+## Rule 5 — CLAUDE.md Is for the New Project, Not Docgen
 
 The CLAUDE.md in the output bundle is written for the product being built, not for this documentation system. It follows the standard structure: What This Is / Commands / Architecture / Code Style / Important Notes. Under 300 lines. Version stamped.
 
@@ -148,7 +59,7 @@ Do not copy the docgen CLAUDE.md into the bundle.
 
 ---
 
-## Rule 9 — Tech Stack Must Be Fully Specified
+## Rule 6 — Tech Stack Must Be Fully Specified
 
 No doc in the bundle may say "use your preferred database" or "choose an appropriate framework." Every technology decision must be explicit:
 - Frontend: framework + version
@@ -157,19 +68,35 @@ No doc in the bundle may say "use your preferred database" or "choose an appropr
 - Auth: provider + method
 - Deployment: platform + config
 
-If the user hasn't decided, apply smart defaults (Rule 3) and mark as ASSUMED.
+If the user hasn't decided, recommend a stack per Q5 guidelines and confirm before generating.
 
 ---
 
-## Rule 10 — File Structure Is Declared in Architecture Doc
+## Rule 7 — File Structure Is Declared in Architecture Doc
 
 The ARCH doc must contain the complete top-level folder structure for the project. Not a general diagram — the actual intended directory tree, with a one-line comment on every folder.
+
+Example (not a template — adapt to actual stack):
+```
+my-app/
+├── src/
+│   ├── app/          ← Next.js App Router pages
+│   ├── components/   ← Shared UI components
+│   ├── lib/          ← Utilities, auth, db client
+│   └── types/        ← TypeScript type definitions
+├── prisma/           ← Schema and migrations
+├── public/           ← Static assets
+├── tests/            ← Jest unit + integration tests
+├── .env.example      ← All required env vars (no values)
+├── CLAUDE.md         ← AI coding context (read first)
+└── package.json
+```
 
 The dev plan's task list must reference this exact structure. Discrepancies between ARCH and DEV_Plan = Gate 3 fail.
 
 ---
 
-## Rule 11 — MVP Scope Is Frozen at Intake
+## Rule 8 — MVP Scope Is Frozen at Intake
 
 Once the user confirms the MVP feature list, the entire bundle scopes to those features only. If the user asks to add features during generation, pause and ask: "Do you want to add this to the MVP scope? This will require updating the architecture, schema, API spec, and dev plan before I continue."
 
@@ -177,9 +104,9 @@ Never silently expand scope mid-generation.
 
 ---
 
-## Rule 12 — Every Integration Gets an Environment Variable
+## Rule 9 — Every Integration Gets an Environment Variable
 
-Every external service mentioned in intake must appear in:
+Every external service mentioned in Q6 must appear in:
 - `SETUP_Environment.md` → API Keys section
 - `.env.example` → the scaffold file
 - `ARCH_System.md` → Integrations section
@@ -189,7 +116,7 @@ A service mentioned in the architecture but missing from the environment setup =
 
 ---
 
-## Rule 13 — Quality Score Target Is 90/100 for Product Bundles
+## Rule 10 — Quality Score Target Is 90/100 for Product Bundles
 
 Product bundles are directly used by AI agents for code generation. The standard 85/100 minimum is insufficient. The higher bar applies because:
 - Partial or ambiguous docs cause the AI coding agent to hallucinate implementation details
@@ -202,22 +129,80 @@ Gate 4 checklist additions for product bundles:
 - [ ] Starter prompt tested mentally: can AI complete Phase 0 from prompt alone?
 - [ ] CLAUDE.md is ≤300 lines and correctly describes the new project (not docgen)
 - [ ] `.env.example` contains all keys referenced in all docs
-- [ ] No hallucinated features, decisions, or facts (Rule 1 compliance)
-- [ ] All ASSUMED/INFERRED items are marked (Rule 3 compliance)
 
 ---
 
-## Rule 14 — Deliver Two Bundle Formats
+## Rule 12 — Generated Docs Must Be Written Lean
 
-The output bundle must be usable in both Claude.ai chat (flat file upload) and Claude Code / Cowork (folder structure). Generate two delivery options:
+Every doc in the product bundle is read by an AI coding agent, not a human. Dense, structured output parses better and costs fewer tokens to send as context. Apply these per-doc rules:
 
-**Option A — Full bundle (Cowork / Claude Code / Cursor):**
-Individual files in a folder: `PRD.md`, `UX.md`, `UI.md`, `ARCH_System.md`, `DATA_Schema.md`, `API_Spec.md`, `SETUP_Environment.md`, `DEV_Plan.md`, `CLAUDE.md`, `STARTER_PROMPT.md`. Each file standalone.
+### PRD
+- Features as user stories only: `As a [user], I want [action] so that [outcome].`
+- Acceptance criteria: `GIVEN/WHEN/THEN` — one line each, no prose
+- Out-of-scope: bulleted list, one phrase per item
+- No narrative introduction — start with Problem Statement directly
+- Bad: "The user registration feature will allow new users to create accounts..." → Good: `User registers | POST /auth/register | returns JWT`
 
-**Option B — Chat bundle (Claude.ai Projects):**
-Consolidate into 3 files for easy upload with no naming conflicts:
-- `CONTEXT_Product.md` — merges PRD + UX + UI + Vision (what to build)
-- `CONTEXT_Technical.md` — merges Architecture + Data Schema + API Spec + Setup (how to build it)
-- `IMPLEMENTATION.md` — merges Dev Plan + CLAUDE.md + Starter Prompt (execute the build)
+### Architecture Doc
+- Tech stack decisions: table format — `| Layer | Choice | Version | Reason (one clause) |`
+- File structure: directory tree with ← comments, nothing else
+- Data flow: numbered sequence `1. Client → 2. API → 3. DB → 4. Response`, not prose
+- Integrations: one row per service — `| Service | Purpose | Auth method | Env var |`
+- No "we chose X because it is a popular and well-supported..." — just `| DB | Postgres | mature, Prisma support |`
 
-Both options go in the zip. Chat users upload 3 files. Code users use the full folder.
+### Data Schema
+- Table per entity: `| Field | Type | Required | Default | Notes |`
+- Relationships: `User 1→N Projects` — not prose
+- No field explanations inline — notes column only if non-obvious
+
+### API Spec
+- One table per endpoint group: `| Method | Path | Auth | Body | Response |`
+- Request/response shapes: inline JSON schema, no prose description
+- Error codes: `| Code | Meaning | When |` — three columns, one row per code
+
+### Dev Plan
+- Task format: `{N.M} — {verb} {filename}` / `Acceptance: {GIVEN/WHEN/THEN}`
+- No "goal" paragraphs beyond one sentence per phase
+- Phase header format: `Phase N — {Name} | Depends: Phase {N-1} | Est: {N}h`
+
+### Starter Prompt
+- Under 600 tokens total
+- No "How to Use This File" section in the actual prompt — only in surrounding wrapper
+- Rules section: 5 rules max, one sentence each
+- Phase 0 tasks: copy from Dev Plan verbatim, no restatement
+
+### CLAUDE.md (for the built product)
+- Under 150 lines
+- Commands section: copy-pasteable only — no explanation of what commands do
+- Architecture section: one paragraph max, reference ARCH_System.md for detail
+
+---
+
+## Rule 11 — AI-Native Products Use prompt-building Skills (Callable)
+
+When Q5 identifies an AI-native stack (LLM product, AI agent, RAG system, chatbot, prompt pipeline), the following `prompt-building` skills are callable via Skill tool — use them instead of or in addition to local SKILL.md reads:
+
+| Stage | When | Call |
+|-------|------|------|
+| Stage 5 — Architecture | Always for AI-native stack | `Skill tool: prompt-building:prompt-engineering-patterns` → prompt architecture, system prompt design, token efficiency |
+| Stage 5 — Architecture | If multi-step chains or agents | `Skill tool: prompt-building:langchain-architecture` → chain design, ReAct agent, memory architecture |
+| Stage 7 — API Spec | If prompt API endpoints exist | `Skill tool: prompt-building:prompt-engineering-patterns` → structured output schemas for prompt inputs/outputs |
+| Stage 9 — Dev Plan | If evaluation tasks in plan | `Skill tool: prompt-building:llm-evaluation` → quality metric tasks, LLM-as-Judge setup, A/B test phases |
+| Stage 11 — Starter Prompt | Always for AI-native stack | `Skill tool: prompt-building:prompt-engineering-patterns` → apply few-shot, CoT, and structured output to the starter prompt itself |
+
+**AI-native detection rule:** If Q0 mentions LLM, AI, GPT, Claude, agents, RAG, embeddings, chatbot, or prompt — treat as AI-native and apply this rule.
+
+**Token budget:** Each Skill tool call counts as one of the two allowed skill activations per stage. If this rule adds a third, it replaces the secondary local read (not the primary architecture skill).
+
+---
+
+## Stage 3 (UI) — Missing Skill Workaround
+
+The skills `ui-ux-pro-max` and `ui-styling` are not available locally. At UI generation:
+
+1. Apply standard UX component patterns and accessibility principles directly.
+2. Read the stack-specific framework skill from `skills/SKILL_MAP.md` stack table (e.g., `skills/nextjs-developer/SKILL.md`) — this covers component naming and structure for the target framework.
+3. For React/Next.js: apply shadcn/ui + Tailwind class naming conventions to all component specs.
+4. For mobile stacks: apply native component patterns (iOS HIG for Swift, Material Design for Flutter/Android).
+
+This workaround is documented. Do not attempt to call `ui-ux-pro-max` — it does not exist locally.
