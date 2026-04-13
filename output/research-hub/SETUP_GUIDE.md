@@ -1,148 +1,346 @@
 # Research Hub — Setup Guide
-**Custom Claude Project for any kind of research.**
-Last updated: April 2026
+**Version:** 2.0 · Chat + Cowork Installation
+**Time to deploy:** 10 min (Chat) / 20 min (Cowork)
 
 ---
 
-## What This Project Does
+## OPTION A: CHAT MODE (Recommended for First-Time Users)
 
-A persistent Claude workspace that can conduct, synthesize, and structure research across domains — market analysis, competitive intelligence, technical deep-dives, literature review, and RAG-powered document research. Works in both Chat and Cowork mode.
+### Quick Start (5 minutes)
 
----
+1. **Create a new Claude Project**
+   - Go to Claude.ai → New Project
+   - Name it: "Research Hub"
 
-## Skills Selected (from new-skills audit)
+2. **Upload Knowledge Base (Optional)**
+   - Copy the following files into the project's knowledge base:
+   - `CLAUDE.md` (project instructions)
+   - `OPERATING_RULES.md` (research gates + quality scoring)
+   - `RESEARCH_MODE_GUIDES.md` (frameworks for each mode)
+   - `QUESTIONNAIRE_TEMPLATES.md` (copy-paste templates)
 
-### Core Research Skills (Chat + Cowork)
+3. **Set Custom Instructions**
 
-| Skill | Source | What it gives you |
-|-------|--------|-------------------|
-| `rag-implementation` | llm-application-dev | Build knowledge-grounded research from your own documents (vector DB + retrieval) |
-| `hybrid-search-implementation` | llm-application-dev | Combine keyword + semantic search for higher recall when researching large corpora |
-| `embedding-strategies` | llm-application-dev | Optimize how research documents are chunked and indexed for retrieval |
-| `llm-evaluation` | llm-application-dev | Score research output quality — groundedness, factuality, completeness |
-| `prompt-engineering-patterns` | llm-application-dev | Structure research queries for precision: few-shot, CoT, structured output |
-| `competitive-landscape` | startup-business-analyst | Porter's Five Forces, Blue Ocean, positioning maps — for competitive research |
-| `market-sizing-analysis` | startup-business-analyst | TAM/SAM/SOM with top-down, bottom-up, value-theory methods |
-| `data-storytelling` | business-analytics | Turn research findings into executive-ready narratives and presentations |
-| `context-driven-development` | conductor | Maintain research context across sessions (product.md, tracks.md pattern) |
-
-### Orchestration Skills (Cowork only — multi-agent research)
-
-| Skill | What it gives you |
-|-------|-------------------|
-| `team-composition-patterns` | Preset research team: assign agents to parallel research tracks |
-| `task-coordination-strategies` | Decompose large research tasks across parallel agents with dependency graphs |
-
----
-
-## How to Set Up (Claude Projects / Chat)
-
-1. **Create a new Claude Project** named "Research Hub"
-
-2. **Upload knowledge base files** (pick what fits your research domain):
-   - `skills/rag-implementation/SKILL.md`
-   - `skills/hybrid-search-implementation/SKILL.md`
-   - `skills/prompt-engineering-patterns/SKILL.md`
-   - `skills/competitive-landscape/SKILL.md`
-   - `skills/market-sizing-analysis/SKILL.md`
-   - `skills/data-storytelling/SKILL.md`
-   - `skills/context-driven-development/SKILL.md`
-
-3. **Paste these Custom Instructions:**
-
-**Field A — "What would you like ChatGPT/Claude to know?"**
-```
-I am a Research Hub — a specialized AI workspace for conducting structured research across domains: market analysis, competitive intelligence, technical literature, document analysis, and expert synthesis.
-
-I support 5 research modes:
-1. Document research — analyze uploaded files, extract key insights, answer questions grounded in the docs
-2. Competitive research — competitor landscape, positioning, differentiation opportunities
-3. Market research — TAM/SAM/SOM sizing, trend analysis, customer segment profiling
-4. Technical research — deep-dives into technologies, architectures, tradeoffs
-5. Synthesis — consolidate findings from multiple sources into structured reports
-
-Every research output is: structured (framework-based), cited (claims backed by sources), and action-oriented (ends with implications or next steps).
-```
-
-**Field B — "How would you like to respond?"**
-```
-RESEARCH HUB OPERATING RULES:
-
-1. ALWAYS ask which research mode before starting (Document / Competitive / Market / Technical / Synthesis).
-
-2. ALWAYS ask for the research question in the format: "What do you want to know, and why does it matter?" before researching.
-
-3. Run a RESEARCH GATE before starting work:
-   - Document research: "What documents are you providing? What question should I answer from them?"
-   - Competitive research: "Who are the top 3 competitors to focus on? What's the key strategic question?"
-   - Market research: "What's the target geography, customer segment, and time horizon?"
-   - Technical research: "What decision does this research need to support?"
-   - Synthesis: "What sources/findings are we synthesizing? What's the output format?"
-
-4. Apply the appropriate framework from knowledge base (Porter's Five Forces, TAM/SAM/SOM, RAG pipeline, etc.)
-
-5. Structure ALL research outputs as:
-   - Executive Summary (3 sentences max)
-   - Key Findings (numbered, each with source/basis)
-   - Framework Analysis (relevant model applied)
-   - Implications / Recommendations
-   - Open Questions / Next Steps
-
-6. Mark every claim with its basis: [STATED] (user provided), [INFERRED] (logical deduction), [ASSUMED] (best guess).
-
-7. Never hallucinate sources. If you don't know — say so and propose how to find it.
-```
-
-4. **Set 4 conversation starters:**
-   - `Research a market: size the opportunity and map the competitive landscape`
-   - `Analyze documents: I'll upload files and you extract key insights`
-   - `Technical deep-dive: research a technology, architecture, or tool`
-   - `Synthesize research: consolidate findings into a structured report`
-
----
-
-## How to Set Up (Cowork Mode)
-
-For multi-agent parallel research using the agent-teams skills:
-
-1. Install skills to Cowork:
+   **Field: "What would you like Claude to know?"**
    ```
-   cp -r skills/rag-implementation ~/.claude/skills/
-   cp -r skills/hybrid-search-implementation ~/.claude/skills/
-   cp -r skills/prompt-engineering-patterns ~/.claude/skills/
-   cp -r skills/competitive-landscape ~/.claude/skills/
-   cp -r skills/market-sizing-analysis ~/.claude/skills/
-   cp -r skills/data-storytelling ~/.claude/skills/
-   cp -r skills/context-driven-development ~/.claude/skills/
-   cp -r skills/team-composition-patterns ~/.claude/skills/
-   cp -r skills/task-coordination-strategies ~/.claude/skills/
+   I am the Research Hub — a specialized AI workspace for conducting structured research across 6 modes:
+   1. Competitive (positioning, gaps, differentiation)
+   2. Market (TAM/SAM/SOM sizing, trends)
+   3. Technical (tool/architecture comparisons, tradeoffs)
+   4. User Research (workflows, pain points, objections)
+   5. Document Analysis (extract insights from uploaded files)
+   6. Synthesis (consolidate findings into strategic narrative)
+
+   Every research output is:
+   - Structured (mode-specific framework applied)
+   - Cited (all claims backed by sources, marked [source: URL])
+   - Marked (assumptions tagged [STATED]/[INFERRED]/[ASSUMED])
+   - Actionable (clear implications and next steps)
+
+   My operating constraints:
+   - Token efficiency: 500–2,000 tokens per research (depth-dependent)
+   - Zero hallucination: Never cite sources I haven't found
+   - Quality gates: Auto-score every research output (target: 85+/100)
    ```
 
-2. For parallel research sessions, use the Research preset from `team-composition-patterns`:
-   - Spawn agents per research track (e.g., one per competitor, one per market segment)
-   - Coordinate via `task-coordination-strategies` dependency graph
-   - Consolidate with `data-storytelling` for final output
+   **Field: "How would you like to respond?"**
+   ```
+   RESEARCH HUB OPERATING RULES:
 
-3. Use `context-driven-development` to maintain a `conductor/` directory with:
-   - `product.md` → research project brief
-   - `tracks.md` → active research tracks
-   - `workflow.md` → research process
+   1. START EVERY SESSION with the menu (show 6 research modes)
+   2. RUN THE 4-GATE WORKFLOW:
+      - Gate 1: Identify mode (user picks or you classify)
+      - Gate 2: Collect Tier 1 context ("What?" + "Why?")
+      - Gate 3: Run mode-specific research gate (3–5 questions)
+      - Gate 4: Execute research + return findings in output format
+
+   3. APPLY THE FRAMEWORK for that mode (see RESEARCH_MODE_GUIDES.md)
+
+   4. STRUCTURE ALL OUTPUTS as:
+      - Executive Summary (3 sentences max)
+      - Key Findings (numbered, each marked [STATED]/[INFERRED]/[ASSUMED])
+      - Framework Analysis (Porter's 5 Forces, TAM/SAM/SOM, JTBD, etc.)
+      - Implications & Next Steps
+      - Confidence Level (High/Medium/Low with reasoning)
+      - What's Still Unknown
+      - Suggested Next Research
+
+   5. MARK EVERY CLAIM with basis:
+      - [STATED] = user provided
+      - [INFERRED] = logical deduction
+      - [ASSUMED] = best guess (needs validation)
+
+   6. CITE ALL SOURCES inline: [source: URL/document]
+      - Never hallucinate sources. If unknown: "Source not found. Recommend searching [X]"
+
+   7. AUTO-SCORE EVERY RESEARCH before returning:
+      - Factuality (25 pts): All claims cited?
+      - Completeness (25 pts): Answers the question?
+      - Structure (25 pts): Output contract met?
+      - Actionability (25 pts): Can user/AI act on this?
+      - Minimum pass: 85/100. If below, rerun.
+
+   8. NO VAGUE LANGUAGE. Ban these words in outputs:
+      "should, may, might, consider, try, could, seems, appears, possibly, perhaps, maybe"
+      Use instead: "IS", "WILL", "DOES", "MUST", "APPLY", "USE"
+
+   9. LOAD SKILLS ON-DEMAND ONLY (see SKILL_LOADING.md):
+      - Competitive: competitive-analysis + prompt-engineering-patterns
+      - Market: ai-product-strategy + building-with-llms
+      - Technical: evaluating-new-technology + ai-evals
+      - User: customer-research + conducting-user-interviews
+      - Document: building-with-llms (RAG) + prompt-engineering
+      - Synthesis: ai-evals + prompt-engineering-patterns
+
+   10. TOKEN OPTIMIZATION:
+       - Web search first (factual lookups, 0 tokens)
+       - Synthesize only when needed
+       - Quick mode: 500–800 tokens
+       - Standard mode: 1,200–1,600 tokens
+       - Deep mode: 1,800–2,200 tokens
+   ```
+
+4. **Add Conversation Starters (Optional but Recommended)**
+
+   Set these to help users jump in fast:
+   - 🎯 "Research a market" — Size the opportunity and map competitive landscape
+   - 🔍 "Competitive deep-dive" — Who are my top competitors and their positioning?
+   - 💡 "Technical evaluation" — Should I use [Tool A] or [Tool B]?
+   - 👥 "User research" — What do my target users actually need?
+   - 📄 "Analyze documents" — I'll upload files; extract key insights
+   - 🧩 "Synthesize findings" — Consolidate all research into one story
+
+5. **Test It**
+   - Click "Research a market"
+   - Fill the market research questionnaire template (from QUESTIONNAIRE_TEMPLATES.md)
+   - Get back structured TAM/SAM/SOM findings
 
 ---
 
-## Skill Loading (Token Optimization)
+## OPTION B: COWORK MODE (For Multi-Agent Research)
 
-Load skills on demand per research type — never preload all:
+### Setup (15–20 minutes)
 
-| Research type | Load these skills |
-|--------------|------------------|
-| Document research | `rag-implementation` + `hybrid-search-implementation` |
-| Competitive | `competitive-landscape` + `prompt-engineering-patterns` |
-| Market sizing | `market-sizing-analysis` + `data-storytelling` |
-| Technical | `prompt-engineering-patterns` + `llm-evaluation` |
-| Synthesis | `data-storytelling` + `context-driven-development` |
-| Multi-agent (Cowork) | `team-composition-patterns` + `task-coordination-strategies` |
+Cowork mode lets you spawn parallel agents for research (one per competitor, one per market segment, etc.) and have them coordinate.
+
+**Prerequisites:**
+- Cowork installed on your machine
+- Access to the new-skills folder
+
+**Step 1 — Install Core Skills to Cowork**
+
+Copy these skills to `~/.claude/skills/`:
+
+```bash
+# From your new-skills folder, copy:
+cp -r agents-main/plugins/llm-application-dev/skills/prompt-engineering-patterns ~/.claude/skills/
+cp -r agents-main/plugins/llm-application-dev/skills/llm-evaluation ~/.claude/skills/
+cp -r agents-main/plugins/business-analytics/skills/data-storytelling ~/.claude/skills/
+cp -r agents-main/plugins/conductor/skills/context-driven-development ~/.claude/skills/
+
+# For multi-agent orchestration:
+cp -r agents-main/plugins/agent-teams/skills/team-composition-patterns ~/.claude/skills/
+cp -r agents-main/plugins/agent-teams/skills/task-coordination-strategies ~/.claude/skills/
+
+# Deep research skill:
+cp -r claude-deep-research-skill-main ~/.claude/skills/deep-research
+```
+
+**Step 2 — Create Project Context Files**
+
+Create a `conductor/` directory for your research project:
+
+```
+research-hub/
+├── product.md          (project brief)
+├── tracks.md           (active research tracks)
+└── workflow.md         (research process)
+```
+
+**product.md:**
+```markdown
+# Research Hub Project
+
+## Project Brief
+AI-powered research utility for [your use case].
+
+## Key Questions
+1. [Main research question 1]
+2. [Main research question 2]
+3. [Main research question 3]
+
+## Constraints
+- Token budget: X per research
+- Depth: Standard (unless specified)
+- Sources: Web + documents (internal knowledge base TBD)
+
+## Success Metrics
+- Research quality score: 85+/100
+- Time to research: <15 min per request
+- Sources cited: 100%
+```
+
+**tracks.md:**
+```markdown
+# Active Research Tracks
+
+## Track 1: Competitive Analysis
+- Status: In progress / Not started
+- Agents: 1 per competitor (e.g., CompetitorA-Analyzer, CompetitorB-Analyzer)
+- Output: Competitive landscape table + gaps
+
+## Track 2: Market Sizing
+- Status: In progress / Not started
+- Agents: 1 per method (TAM-Calculator, SAM-Calculator, SOM-Estimator)
+- Output: TAM/SAM/SOM with assumptions
+
+## Track 3: User Research
+- Status: In progress / Not started
+- Agents: 1 per user segment (Enterprise-Users, SMB-Users, Indie-Users)
+- Output: User profiles + pain points + quotes
+
+[Add your research tracks]
+```
+
+**Step 3 — Spawn Research Agents**
+
+Example: Competitive research with parallel agents
+
+```
+# Spawn one agent per competitor
+cowork spawn research-hub --mode=competitive --competitor=Notion --task="Analyze Notion's positioning, features, pricing, weakness"
+cowork spawn research-hub --mode=competitive --competitor=Obsidian --task="Analyze Obsidian's positioning, features, pricing, weakness"
+cowork spawn research-hub --mode=competitive --competitor=Roam --task="Analyze Roam's positioning, features, pricing, weakness"
+
+# Coordinator agent synthesizes results
+cowork spawn research-hub --mode=competitive --role=coordinator --task="Consolidate findings into competitive landscape + gaps"
+```
+
+**Step 4 — Coordinate Results**
+
+Use `task-coordination-strategies` skill to:
+- Track dependencies (e.g., Coordinator waits for all Analyzer agents to finish)
+- Consolidate outputs (merge findings into single report)
+- Score quality (apply OPERATING_RULES.md quality gates)
 
 ---
 
-*Research Hub v1.0 · April 2026*
+## KNOWLEDGE BASE: EXTERNAL SOURCES (v2.0)
+
+### Sources Included in Research Hub
+
+**Web Search (Primary):**
+- Google Search (via WebSearch)
+- Bing (via WebSearch)
+- Specialized domains (arxiv.org, crunchbase.com, g2.com, reddit.com, twitter.com)
+
+**Academic & Market Data:**
+- ArXiv (AI/ML papers)
+- Scholar.google.com (academic research)
+- Gartner reports (enterprise market data)
+- CB Insights (startup data)
+- PitchBook (funding data)
+
+**User Voices:**
+- Reddit (communities, pain points)
+- ProductHunt (early adopter feedback)
+- G2 Reviews (customer testimonials)
+- Twitter/X (community discussions)
+- YouTube comments (user sentiment)
+
+**Technical Documentation:**
+- GitHub (code, repos, discussions)
+- Official product documentation
+- Stack Overflow (implementation questions)
+- Blog posts (real-world usage)
+
+### Document Analysis (Upload Files)
+
+For document research, you can upload:
+- PDF files
+- Markdown (.md)
+- Plain text (.txt)
+- Screenshots
+
+Hub uses RAG (Retrieval-Augmented Generation) for semantic search within documents.
+
+### Internal Knowledge Base (Backlog — v3.0)
+
+Coming soon: Ability to ingest and index your own:
+- Internal wikis
+- Previous research archives
+- Company documents
+- Customer interviews
+- Product specifications
+
+---
+
+## TROUBLESHOOTING
+
+### "Research quality score is below 85/100"
+
+**Possible causes:**
+- Sources not cited: Add inline [source: URL] tags
+- Vague language: Replace "should" with "IS" or "WILL"
+- Incomplete answer: Does it directly answer the question?
+- Missing confidence level: Add "Confidence: High/Medium/Low" section
+
+**Fix:** Rerun the research with clearer scope or higher depth level.
+
+### "I'm spending too many tokens"
+
+**Optimization steps:**
+1. Use "Quick" mode (500–800 tokens) for directional decisions
+2. Narrow scope: "US market only" instead of "global market"
+3. Fewer sources: 3–5 credible sources instead of 10+
+4. Web search first: Don't synthesize until you have data
+
+### "Results feel shallow"
+
+**Depth progression:**
+- Quick (3 min): Directional answer from 1–2 sources
+- Standard (5–10 min): Balanced answer from 5–7 sources ← DEFAULT
+- Deep (15–20 min): Comprehensive from 10+ sources with analysis
+- Ultradeep (30+ min): PhD-level rigor, multiple frameworks
+
+**Fix:** Specify "Deep" mode in questionnaire.
+
+### "Contradictions between sources"
+
+**This is normal and valuable.** Hub will:
+1. Flag the contradiction explicitly
+2. Note source, date, context for each
+3. Recommend which to trust based on recency + credibility
+4. Suggest how to resolve (e.g., "Contact both vendors for clarification")
+
+---
+
+## NEXT STEPS
+
+1. **Choose your deployment:** Chat (easy) or Cowork (powerful)
+2. **Pick your first research** using conversation starters
+3. **Fill the questionnaire template** for your mode
+4. **Review the research output** against quality gates (OPERATING_RULES.md)
+5. **Act on findings** → next step recommendation
+
+---
+
+## SKILL LOADING REFERENCE
+
+**To minimize tokens, load only relevant skills per research mode:**
+
+| Mode | Primary Skill | Secondary Skill |
+|------|--------------|-----------------|
+| Competitive | competitive-analysis | prompt-engineering-patterns |
+| Market | ai-product-strategy | building-with-llms |
+| Technical | evaluating-new-technology | ai-evals |
+| User | customer-research | conducting-user-interviews |
+| Document | building-with-llms | prompt-engineering-patterns |
+| Synthesis | ai-evals | prompt-engineering-patterns |
+
+Never preload all skills. Load on-demand only.
+
+---
+
+*Setup Guide v2.0 · April 2026*
+*Deploy in 5–20 minutes. Research in minutes.*
